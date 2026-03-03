@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luke R. Horton — Aerospace Engineer & Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0a0b;
+    --bg-elevated: #111113;
+    --bg-card: #161618;
+    --border: #222225;
+    --border-hover: #333338;
+    --text-primary: #ededef;
+    --text-secondary: #8a8a8e;
+    --text-muted: #5a5a5e;
+    --accent: #6eb4ff;
+    --accent-dim: rgba(110, 180, 255, 0.08);
+    --accent-glow: rgba(110, 180, 255, 0.15);
+    --serif: 'Instrument Serif', Georgia, serif;
+    --sans: 'DM Sans', -apple-system, sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--bg);
+  }
+
+  /* --- NAV --- */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 1.25rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(10, 10, 11, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s;
+  }
+
+  nav.scrolled { border-bottom-color: var(--border); }
+
+  .nav-logo {
+    font-family: var(--serif);
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+
+  .nav-links { display: flex; gap: 2rem; }
+
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    transition: color 0.25s;
+  }
+
+  .nav-links a:hover { color: var(--text-primary); }
+
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px;
+  }
+
+  .hamburger span {
+    width: 22px;
+    height: 1.5px;
+    background: var(--text-secondary);
+    transition: all 0.3s;
+  }
+
+  /* --- HERO --- */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8rem 2rem 4rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 1.75rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.4s;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    max-width: 540px;
+    line-height: 1.7;
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.6s;
+  }
+
+  .hero-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.8s;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    font-family: var(--sans);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.25s;
+    letter-spacing: 0.02em;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+    border: 1px solid var(--accent);
+  }
+
+  .btn-primary:hover {
+    background: #8fc6ff;
+    box-shadow: 0 0 30px var(--accent-glow);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+  }
+
+  .btn-outline:hover {
+    border-color: var(--text-secondary);
+    background: var(--bg-elevated);
+  }
+
+  .hero-scroll-hint {
+    position: absolute;
+    bottom: 2.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 1s;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  /* --- SECTIONS --- */
+  section {
+    padding: 6rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    font-weight: 500;
+  }
+
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    margin-bottom: 3rem;
+    line-height: 1.15;
+  }
+
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: var(--border);
+    margin: 0 auto;
+    max-width: 1100px;
+  }
+
+  /* --- ABOUT --- */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .about-text p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    line-height: 1.8;
+    font-weight: 300;
+    margin-bottom: 1.25rem;
+  }
+
+  .about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.5rem;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+
+  .stat-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+  }
+
+  .stat-number {
+    font-family: var(--serif);
+    font-size: 2rem;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+  }
+
+  /* --- PROJECTS --- */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .project-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .project-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3), 0 0 40px var(--accent-dim);
+  }
+
+  .project-preview {
+    height: 200px;
+    background: var(--bg-elevated);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .project-preview::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--accent-dim), transparent 60%);
+  }
+
+  .project-icon {
+    font-size: 3rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .project-body {
+    padding: 1.75rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .project-tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-dim);
+    padding: 0.3rem 0.7rem;
+    border-radius: 4px;
+    margin-bottom: 0.85rem;
+    font-weight: 500;
+    width: fit-content;
+  }
+
+  .project-card h3 {
+    font-family: var(--serif);
+    font-size: 1.45rem;
+    margin-bottom: 0.65rem;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  .project-card p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.65;
+    font-weight: 300;
+    flex: 1;
+  }
+
+  .project-link-text {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1.25rem;
+    color: var(--accent);
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: gap 0.25s;
+  }
+
+  .project-card:hover .project-link-text { gap: 0.7rem; }
+
+  /* --- EXPERIENCE --- */
+  .timeline { display: flex; flex-direction: column; gap: 0rem; }
+
+  .timeline-item {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 3rem;
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.3s;
+  }
+
+  .timeline-item:first-child { border-top: 1px solid var(--border); }
+
+  .timeline-date {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    padding-top: 0.2rem;
+  }
+
+  .timeline-content h3 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+  }
+
+  .timeline-org {
+    color: var(--accent);
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
+    font-weight: 400;
+  }
+
+  .timeline-content p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* --- SKILLS --- */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .skill-group {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 2rem;
+    transition: border-color 0.3s;
+  }
+
+  .skill-group:hover { border-color: var(--border-hover); }
+
+  .skill-group h3 {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.25rem;
+    font-weight: 500;
+  }
+
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .skill-tag {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    padding: 0.4rem 0.85rem;
+    border-radius: 5px;
+    font-weight: 400;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .skill-tag:hover {
+    color: var(--text-primary);
+    border-color: var(--border-hover);
+  }
+
+  /* --- LEADERSHIP --- */
+  .leadership-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2.5rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2rem;
+    align-items: center;
+    transition: border-color 0.3s;
+  }
+
+  .leadership-card:hover { border-color: var(--border-hover); }
+
+  .leadership-badge {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--accent-dim);
+    border: 1px solid rgba(110, 180, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+
+  .leadership-card h3 {
+    font-size: 1.15rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+  }
+
+  .leadership-card .timeline-org { margin-bottom: 0.5rem; }
+
+  .leadership-card p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* --- CONTACT --- */
+  #contact {
+    text-align: center;
+    padding-bottom: 8rem;
+  }
+
+  #contact .section-title { margin-bottom: 1rem; }
+
+  .contact-sub {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    font-weight: 300;
+    margin-bottom: 2.5rem;
+  }
+
+  .contact-links {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .contact-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 400;
+    transition: all 0.25s;
+  }
+
+  .contact-link:hover {
+    border-color: var(--accent);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+  }
+
+  .contact-link svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+  }
+
+  /* --- FOOTER --- */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  /* --- ANIMATIONS --- */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* --- RESPONSIVE --- */
+  @media (max-width: 900px) {
+    .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: 1fr 1fr; }
+    .timeline-item {
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+  }
+
+  @media (max-width: 640px) {
+    nav { padding: 1rem 1.25rem; }
+    .nav-links { display: none; }
+    .nav-links.open {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: rgba(10,10,11,0.95);
+      backdrop-filter: blur(20px);
+      padding: 1.5rem 2rem;
+      gap: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .hamburger { display: flex; }
+    .hero { padding: 7rem 1.25rem 3rem; min-height: 90vh; }
+    section { padding: 4rem 1.25rem; }
+    .skills-grid { grid-template-columns: 1fr; }
+    .hero-links { flex-direction: column; }
+    .btn { justify-content: center; }
+    .leadership-card {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+    .leadership-badge { margin: 0 auto; }
+    .about-stats { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">LH</a>
+  <div class="nav-links" id="navLinks">
+    <a href="#about">About</a>
+    <a href="#projects">Projects</a>
+    <a href="#experience">Experience</a>
+    <a href="#skills">Skills</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">Aerospace Engineer · Developer · Builder</p>
+  <h1>Luke R.<br>Horton</h1>
+  <p class="hero-sub">Aerospace engineering student at San Diego State University with a passion for design, analysis, and building things that fly — from carrier-based strike fighters to ground-effect vehicles.</p>
+  <div class="hero-links">
+    <a href="#projects" class="btn btn-primary">View Projects →</a>
+    <a href="#contact" class="btn btn-outline">Get in Touch</a>
+  </div>
+  <div class="hero-scroll-hint">
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="reveal">
+    <p class="section-label">01 — About</p>
+    <h2 class="section-title">Engineer by training,<br>builder by nature.</h2>
+  </div>
+  <div class="about-grid reveal">
+    <div class="about-text">
+      <p>I'm an aerospace engineering senior at SDSU graduating May 2026. My work spans performance analysis for next-generation fighter concepts, hands-on prototype development of ground-effect vehicles, and structural engineering for sounding rockets.</p>
+      <p>Beyond the classroom, I bring real-world experience as a sales engineering intern, leadership as a fraternity chapter president managing a $200K+ budget and 170+ members, and a deep love for fabrication — from welding 800-pound steel stages to building modular structures from scratch.</p>
+      <p>I'm driven by problems that sit at the intersection of analysis and physical design, where CAD models meet test data and theory meets the shop floor.</p>
+    </div>
+    <div class="about-stats">
+      <div class="stat-card">
+        <div class="stat-number">2026</div>
+        <div class="stat-label">B.S. Aerospace Eng.</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">170+</div>
+        <div class="stat-label">Members Led</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">3+</div>
+        <div class="stat-label">Engineering Orgs</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">$200K</div>
+        <div class="stat-label">Budget Managed</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="reveal">
+    <p class="section-label">02 — Projects</p>
+    <h2 class="section-title">Featured work.</h2>
+  </div>
+  <div class="projects-grid reveal">
+    <a href="https://lukerhort.github.io/wig-project/" target="_blank" rel="noopener" class="project-card">
+      <div class="project-preview">
+        <div class="project-icon">✈️</div>
+      </div>
+      <div class="project-body">
+        <span class="project-tag">Senior Design</span>
+        <h3>Wing in Ground Effect Vehicle</h3>
+        <p>Designed, built, and tested a GEV prototype through rapid design–build–test–iterate cycles. Integrated sensors for data capture, executed controlled near-surface tests, and refined the design based on results.</p>
+        <span class="project-link-text">View Project →</span>
+      </div>
+    </a>
+    <a href="https://lukerhort.github.io/aleborne/" target="_blank" rel="noopener" class="project-card">
+      <div class="project-preview">
+        <div class="project-icon">🍺</div>
+      </div>
+      <div class="project-body">
+        <span class="project-tag">Personal Project</span>
+        <h3>Aleborne</h3>
+        <p>A web-based project showcasing development skills outside the engineering domain — demonstrating versatility in design, frontend development, and creative problem solving.</p>
+        <span class="project-link-text">View Project →</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="reveal">
+    <p class="section-label">03 — Experience</p>
+    <h2 class="section-title">Where I've contributed.</h2>
+  </div>
+  <div class="timeline reveal">
+    <div class="timeline-item">
+      <div class="timeline-date">Fall 2025 — Spring 2026</div>
+      <div class="timeline-content">
+        <h3>Performance Lead & Systems Engineer</h3>
+        <div class="timeline-org">Next-Gen Carrier Based Strike Fighter · SDSU Senior Capstone</div>
+        <p>Led performance and test-planning analysis for a conceptual Navy strike fighter. Built physics-based sizing and performance models, ran parametric sweeps, and drove configuration trade decisions through structured analysis.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Spring 2026</div>
+      <div class="timeline-content">
+        <h3>Project Manager</h3>
+        <div class="timeline-org">Wing in Ground Effect Vehicle · SDSU Senior Design</div>
+        <p>Led requirements, schedule, and anomaly troubleshooting for a GEV prototype. Converted performance goals into airfoil/planform/CG trades, diagnosed test issues, and validated improvements through re-test and documentation.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Sept 2025 — Present</div>
+      <div class="timeline-content">
+        <h3>Inside Sales Engineer Intern</h3>
+        <div class="timeline-org">DMG Corporation · San Diego, CA</div>
+        <p>Providing operational support to outside sales engineers — generating quotes, securing vendor pricing, processing orders and POs, coordinating with manufacturers, and managing customer communications.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Fall 2023 — Fall 2024</div>
+      <div class="timeline-content">
+        <h3>External Structures Engineer</h3>
+        <div class="timeline-org">SDSU Rocket Project</div>
+        <p>Performed structural analysis and iterative testing on rocket launch lugs. Refined SolidWorks CAD and drawings for manufacturability while collaborating in cross-team design reviews.</p>
+      </div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-date">Fall 2025 — Present</div>
+      <div class="timeline-content">
+        <h3>President</h3>
+        <div class="timeline-org">San Diego Sales Engineers (National Society of Sales Engineers) · SDSU</div>
+        <p>Planned and organized networking sessions and technical workshops. Participated in panels and a conference competition to strengthen skills and industry connections.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="reveal">
+    <p class="section-label">04 — Skills</p>
+    <h2 class="section-title">What I work with.</h2>
+  </div>
+  <div class="skills-grid reveal">
+    <div class="skill-group">
+      <h3>CAD & Design</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">SolidWorks</span>
+        <span class="skill-tag">GD&T</span>
+        <span class="skill-tag">DFM</span>
+        <span class="skill-tag">Rapid Prototyping</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <h3>Simulation & Analysis</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">ANSYS</span>
+        <span class="skill-tag">NX Nastran (FEA)</span>
+        <span class="skill-tag">MATLAB</span>
+        <span class="skill-tag">Simulink</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <h3>Programming</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">Python</span>
+        <span class="skill-tag">VBA</span>
+        <span class="skill-tag">Git / GitHub</span>
+        <span class="skill-tag">HTML / CSS / JS</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <h3>Documentation</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">LaTeX</span>
+        <span class="skill-tag">Bluebeam Revu</span>
+        <span class="skill-tag">MS Office</span>
+        <span class="skill-tag">Google Suite</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <h3>Fabrication</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">MIG / TIG Welding</span>
+        <span class="skill-tag">Machining</span>
+        <span class="skill-tag">Woodworking</span>
+        <span class="skill-tag">Prototype Assembly</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <h3>Coursework Highlights</h3>
+      <div class="skill-tags">
+        <span class="skill-tag">Flight Controls</span>
+        <span class="skill-tag">Propulsion</span>
+        <span class="skill-tag">Aerodynamics</span>
+        <span class="skill-tag">Structural Dynamics</span>
+        <span class="skill-tag">Astrodynamics</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- LEADERSHIP -->
+<section id="leadership">
+  <div class="reveal">
+    <p class="section-label">05 — Leadership</p>
+    <h2 class="section-title">Beyond engineering.</h2>
+  </div>
+  <div class="reveal">
+    <div class="leadership-card">
+      <div class="leadership-badge">⚡</div>
+      <div>
+        <h3>Chapter President — Kappa Alpha Order</h3>
+        <div class="timeline-org">2024 · Earned IFC Most Improved Chapter</div>
+        <p>Directed a 170+ member chapter with an executive board and 20+ chairs, managing a $200K+ annual budget. Drove measurable gains in membership, engagement, and overall performance, earning institutional recognition.</p>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top: 1.5rem;" class="reveal">
+    <div class="leadership-card">
+      <div class="leadership-badge">🔧</div>
+      <div>
+        <h3>Fabrication & Personal Projects</h3>
+        <div class="timeline-org">Welding · Modular Stage Design</div>
+        <p>Co-led fabrication of a custom 800-lb steel stage for charity events using advanced welding techniques. Separately designed and built a 700 ft² modular stage system emphasizing repeatable assembly and interchangeable modules.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="reveal">
+    <p class="section-label">06 — Contact</p>
+    <h2 class="section-title">Let's connect.</h2>
+    <p class="contact-sub">Open to opportunities in aerospace, defense, and engineering roles.</p>
+    <div class="contact-links">
+      <a href="mailto:lukerhorton4@gmail.com" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13 2 4"/></svg>
+        lukerhorton4@gmail.com
+      </a>
+      <a href="https://www.linkedin.com/in/luke-r-horton" target="_blank" rel="noopener" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14m-.5 15.5v-5.3a3.26 3.26 0 00-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 011.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 001.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 00-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+        LinkedIn
+      </a>
+      <a href="https://github.com/lukerhort" target="_blank" rel="noopener" class="contact-link">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 002 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z"/></svg>
+        GitHub
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 Luke R. Horton · Built with purpose.</p>
+</footer>
+
+<script>
+  // Nav scroll effect
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 50);
+  });
+
+  // Hamburger menu
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.getElementById('navLinks');
+  hamburger.addEventListener('click', () => {
+    navLinks.classList.toggle('open');
+  });
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => navLinks.classList.remove('open'));
+  });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
