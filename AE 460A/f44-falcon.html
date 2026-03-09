@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>F-44 Falcon | AIAA Strike Fighter Design</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Reset & Base ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:      #0a1628;
+      --navy-mid:  #0e2044;
+      --navy-light:#1a3a6e;
+      --blue:      #1b5fc1;
+      --blue-light:#2d7dd2;
+      --accent:    #c8a84b;
+      --accent-light:#e8c96b;
+      --white:     #ffffff;
+      --off-white: #f4f6fa;
+      --gray:      #8a9ab5;
+      --gray-light:#e2e8f0;
+      --text:      #1e2a3a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--white);
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4 { font-family: 'Rajdhani', sans-serif; }
+
+    /* ─── Navbar ────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(10, 22, 40, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(200,168,75,0.18);
+      padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+
+    .nav-brand {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none;
+    }
+
+    .nav-brand .logo-mark {
+      width: 38px; height: 38px;
+      background: linear-gradient(135deg, var(--blue), var(--accent));
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700; font-size: 1rem;
+      color: white; letter-spacing: 0.5px;
+    }
+
+    .nav-brand span {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.25rem; font-weight: 700;
+      color: var(--white); letter-spacing: 1px;
+    }
+
+    .nav-links {
+      display: flex; gap: 2rem; list-style: none;
+    }
+
+    .nav-links a {
+      color: rgba(255,255,255,0.75);
+      text-decoration: none;
+      font-size: 0.875rem; font-weight: 500; letter-spacing: 0.5px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--accent-light); }
+
+    /* ─── Hero ──────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(27,95,193,0.25) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(200,168,75,0.12) 0%, transparent 50%),
+        linear-gradient(165deg, #070e1c 0%, #0a1628 40%, #0d1f3c 70%, #0a1628 100%);
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      text-align: center; padding: 100px 2rem 4rem;
+      position: relative; overflow: hidden;
+    }
+
+    /* subtle grid overlay */
+    #hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(27,95,193,0.06) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(27,95,193,0.06) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    /* diagonal accent bar */
+    #hero::after {
+      content: '';
+      position: absolute; bottom: -2px; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+
+    .hero-eyebrow {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(200,168,75,0.12);
+      border: 1px solid rgba(200,168,75,0.3);
+      border-radius: 100px;
+      padding: 6px 20px;
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--accent-light);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-eyebrow::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { opacity: 1; } 50% { opacity: 0.4; }
+    }
+
+    .hero-designation {
+      font-size: clamp(1rem, 3vw, 1.25rem);
+      font-weight: 600; letter-spacing: 8px; text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .hero-title {
+      font-size: clamp(4rem, 12vw, 9rem);
+      font-weight: 900; letter-spacing: -2px; line-height: 0.9;
+      color: var(--white);
+      margin-bottom: 1rem;
+      text-shadow: 0 4px 40px rgba(27,95,193,0.4);
+    }
+
+    .hero-title span { color: var(--accent); }
+
+    .hero-subtitle {
+      font-size: clamp(1rem, 2.5vw, 1.35rem);
+      font-weight: 400; color: rgba(255,255,255,0.65);
+      max-width: 620px; line-height: 1.6; margin-bottom: 3rem;
+    }
+
+    .hero-stats {
+      display: flex; gap: 0; flex-wrap: wrap; justify-content: center;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px; overflow: hidden;
+      margin-bottom: 3rem;
+    }
+
+    .hero-stat {
+      padding: 1.25rem 2.5rem;
+      border-right: 1px solid rgba(255,255,255,0.1);
+      text-align: center;
+    }
+
+    .hero-stat:last-child { border-right: none; }
+
+    .hero-stat .val {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 700; color: var(--white); line-height: 1;
+    }
+
+    .hero-stat .val span { color: var(--accent); font-size: 0.7em; }
+
+    .hero-stat .lbl {
+      font-size: 0.7rem; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--gray); margin-top: 4px; font-weight: 500;
+    }
+
+    .hero-cta {
+      display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+    }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 0.875rem 2rem; border-radius: 8px;
+      font-size: 0.9rem; font-weight: 600; letter-spacing: 0.5px;
+      text-decoration: none; transition: all 0.2s; cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--blue), var(--blue-light));
+      color: white;
+      box-shadow: 0 4px 20px rgba(27,95,193,0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(27,95,193,0.5);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: rgba(255,255,255,0.8);
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(255,255,255,0.45);
+      transform: translateY(-2px);
+    }
+
+    /* ─── Section Commons ───────────────────────────────────── */
+    section { padding: 6rem 2rem; }
+
+    .section-inner {
+      max-width: 1100px; margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 3px;
+      text-transform: uppercase; color: var(--blue);
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800; color: var(--navy); line-height: 1.1;
+      margin-bottom: 1rem;
+    }
+
+    .section-title span { color: var(--blue); }
+
+    .section-desc {
+      font-size: 1.05rem; color: #4a5568; line-height: 1.75;
+      max-width: 680px;
+    }
+
+    .divider {
+      width: 48px; height: 3px;
+      background: linear-gradient(90deg, var(--blue), var(--accent));
+      border-radius: 2px; margin: 1.25rem 0 2rem;
+    }
+
+    /* ─── Overview ──────────────────────────────────────────── */
+    #overview { background: var(--white); }
+
+    .overview-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: center; margin-top: 3rem;
+    }
+
+    .overview-text p {
+      font-size: 1rem; color: #4a5568; line-height: 1.8; margin-bottom: 1rem;
+    }
+
+    .overview-badges {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem;
+    }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--off-white); border: 1px solid var(--gray-light);
+      border-radius: 6px; padding: 6px 12px;
+      font-size: 0.8rem; font-weight: 600; color: var(--navy-light);
+    }
+
+    .badge .dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--blue);
+    }
+
+    .overview-image {
+      background: linear-gradient(135deg, #0a1628 0%, #0e2044 100%);
+      border-radius: 16px; overflow: hidden;
+      border: 1px solid rgba(27,95,193,0.25);
+      box-shadow: 0 20px 60px rgba(10,22,40,0.25);
+      padding: 2rem;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 320px;
+    }
+
+    .overview-image img {
+      width: 100%; height: auto; max-height: 360px;
+      object-fit: contain; border-radius: 8px;
+    }
+
+    /* ─── Specs ─────────────────────────────────────────────── */
+    #specs { background: var(--off-white); }
+
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.25rem; margin-top: 3rem;
+    }
+
+    .spec-card {
+      background: var(--white);
+      border: 1px solid var(--gray-light);
+      border-radius: 12px; padding: 1.5rem;
+      position: relative; overflow: hidden;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .spec-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--blue), var(--blue-light));
+    }
+
+    .spec-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(27,95,193,0.12);
+    }
+
+    .spec-icon {
+      width: 40px; height: 40px; border-radius: 8px;
+      background: rgba(27,95,193,0.08);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 1rem;
+      font-size: 1.2rem;
+    }
+
+    .spec-label {
+      font-size: 0.7rem; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--gray); font-weight: 600; margin-bottom: 0.4rem;
+    }
+
+    .spec-value {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.6rem; font-weight: 700; color: var(--navy); line-height: 1;
+      margin-bottom: 0.25rem;
+    }
+
+    .spec-unit {
+      font-size: 0.8rem; color: var(--gray); font-weight: 500;
+    }
+
+    /* ─── Missions ──────────────────────────────────────────── */
+    #missions { background: var(--white); }
+
+    .missions-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 2rem; margin-top: 3rem;
+    }
+
+    .mission-card {
+      border-radius: 16px; overflow: hidden;
+      border: 1px solid var(--gray-light);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .mission-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 50px rgba(10,22,40,0.12);
+    }
+
+    .mission-header {
+      padding: 2rem;
+      position: relative;
+    }
+
+    .mission-card.a2a .mission-header {
+      background: linear-gradient(135deg, #0a1628 0%, #1b3a7a 100%);
+    }
+
+    .mission-card.strike .mission-header {
+      background: linear-gradient(135deg, #1a0a0a 0%, #7a1b1b 100%);
+    }
+
+    .mission-type {
+      font-size: 0.65rem; letter-spacing: 2px; font-weight: 700;
+      text-transform: uppercase; color: rgba(255,255,255,0.5);
+      margin-bottom: 0.5rem;
+    }
+
+    .mission-name {
+      font-size: 1.75rem; font-weight: 800; color: white; margin-bottom: 0.5rem;
+    }
+
+    .mission-badge {
+      display: inline-block;
+      padding: 4px 12px; border-radius: 100px;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    }
+
+    .mission-card.a2a .mission-badge { background: rgba(45,125,210,0.3); color: #7ab8f5; }
+    .mission-card.strike .mission-badge { background: rgba(200,50,50,0.3); color: #f59a7a; }
+
+    .mission-body { padding: 2rem; }
+
+    .mission-stat-row {
+      display: flex; justify-content: space-between;
+      border-bottom: 1px solid var(--gray-light); padding: 0.75rem 0;
+    }
+
+    .mission-stat-row:last-of-type { border-bottom: none; margin-bottom: 1rem; }
+
+    .mission-stat-row .key {
+      font-size: 0.8rem; color: var(--gray); font-weight: 500;
+    }
+
+    .mission-stat-row .val {
+      font-size: 0.875rem; font-weight: 700; color: var(--navy);
+    }
+
+    .payload-list {
+      margin-top: 1rem;
+    }
+
+    .payload-list h4 {
+      font-size: 0.7rem; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--gray); font-weight: 700; margin-bottom: 0.75rem;
+    }
+
+    .payload-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 0.625rem 0.875rem; border-radius: 8px;
+      background: var(--off-white); margin-bottom: 0.5rem;
+      font-size: 0.875rem; font-weight: 600; color: var(--navy);
+    }
+
+    .payload-item .qty {
+      background: var(--blue); color: white;
+      padding: 2px 8px; border-radius: 4px;
+      font-size: 0.75rem; font-weight: 700;
+    }
+
+    /* ─── Mission Profile Diagram ───────────────────────────── */
+    .mission-profile {
+      background: var(--off-white); border-radius: 12px;
+      padding: 1.5rem; margin-top: 1.5rem;
+    }
+
+    .mission-profile h4 {
+      font-size: 0.7rem; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--gray); font-weight: 700; margin-bottom: 1rem;
+    }
+
+    .mission-phases {
+      display: flex; align-items: center; gap: 0; flex-wrap: wrap;
+    }
+
+    .phase {
+      display: flex; flex-direction: column; align-items: center;
+      gap: 4px; flex: 1; min-width: 60px;
+    }
+
+    .phase-icon {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      background: white; border: 2px solid var(--gray-light);
+    }
+
+    .phase-icon.active {
+      background: linear-gradient(135deg, var(--blue), var(--blue-light));
+      border-color: var(--blue);
+    }
+
+    .phase-label {
+      font-size: 0.6rem; text-align: center; color: var(--gray);
+      font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    .phase-arrow {
+      color: var(--gray-light); font-size: 1.2rem; flex-shrink: 0;
+      margin: 0 2px; margin-bottom: 22px;
+    }
+
+    /* ─── Team ──────────────────────────────────────────────── */
+    #team { background: var(--navy); }
+
+    #team .section-title { color: var(--white); }
+    #team .section-label { color: var(--accent); }
+    #team .section-desc { color: rgba(255,255,255,0.55); }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.25rem; margin-top: 3rem;
+    }
+
+    .team-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px; padding: 1.75rem 1.25rem;
+      text-align: center;
+      transition: all 0.25s;
+      position: relative; overflow: hidden;
+    }
+
+    .team-card::after {
+      content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--blue), var(--accent));
+      transform: scaleX(0); transition: transform 0.3s;
+    }
+
+    .team-card:hover {
+      background: rgba(255,255,255,0.07);
+      border-color: rgba(255,255,255,0.15);
+      transform: translateY(-4px);
+    }
+
+    .team-card:hover::after { transform: scaleX(1); }
+
+    .team-avatar {
+      width: 72px; height: 72px; border-radius: 50%;
+      margin: 0 auto 1rem;
+      background: linear-gradient(135deg, var(--blue), var(--navy-light));
+      border: 2px solid rgba(255,255,255,0.12);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; font-weight: 800; font-family: 'Rajdhani', sans-serif;
+      color: white;
+    }
+
+    .team-name {
+      font-size: 1rem; font-weight: 700; color: var(--white); margin-bottom: 0.35rem;
+      line-height: 1.2;
+    }
+
+    .team-role {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.5px;
+      color: var(--accent);
+      text-transform: uppercase; margin-bottom: 0.5rem;
+    }
+
+    .team-school {
+      font-size: 0.72rem; color: rgba(255,255,255,0.38); font-weight: 500;
+    }
+
+    /* ─── Competition / About Banner ────────────────────────── */
+    #about-banner {
+      background: linear-gradient(135deg, var(--blue) 0%, var(--navy-light) 100%);
+      padding: 4rem 2rem; text-align: center;
+    }
+
+    .about-inner { max-width: 780px; margin: 0 auto; }
+
+    .about-inner p {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: rgba(255,255,255,0.85); line-height: 1.75;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-meta {
+      display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;
+    }
+
+    .about-meta-item {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+    }
+
+    .about-meta-item .m-val {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.6rem; font-weight: 800; color: white;
+    }
+
+    .about-meta-item .m-lbl {
+      font-size: 0.7rem; letter-spacing: 1.5px; text-transform: uppercase;
+      color: rgba(255,255,255,0.55);
+    }
+
+    /* ─── Footer ────────────────────────────────────────────── */
+    footer {
+      background: #050c17; padding: 2.5rem 2rem;
+      text-align: center;
+    }
+
+    .footer-inner { max-width: 800px; margin: 0 auto; }
+
+    .footer-brand {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.5rem; font-weight: 800;
+      color: var(--white); letter-spacing: 2px; margin-bottom: 0.5rem;
+    }
+
+    .footer-brand span { color: var(--accent); }
+
+    footer p {
+      font-size: 0.8rem; color: rgba(255,255,255,0.3); line-height: 1.6;
+    }
+
+    .footer-links {
+      display: flex; gap: 1.5rem; justify-content: center;
+      flex-wrap: wrap; margin: 1rem 0;
+    }
+
+    .footer-links a {
+      font-size: 0.78rem; color: rgba(255,255,255,0.45);
+      text-decoration: none; font-weight: 500;
+      letter-spacing: 0.5px; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--accent-light); }
+
+    /* ─── Scroll Animations ─────────────────────────────────── */
+    .fade-in {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .fade-in.visible {
+      opacity: 1; transform: translateY(0);
+    }
+
+    /* ─── Responsive ────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .overview-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .missions-grid { grid-template-columns: 1fr; }
+      .hero-stat { padding: 1rem 1.5rem; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ─── NAVBAR ──────────────────────────────────────────── -->
+  <nav>
+    <a href="#hero" class="nav-brand">
+      <div class="logo-mark">F-44</div>
+      <span>FALCON</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#overview">Overview</a></li>
+      <li><a href="#specs">Specifications</a></li>
+      <li><a href="#missions">Missions</a></li>
+      <li><a href="#team">Team</a></li>
+    </ul>
+  </nav>
+
+  <!-- ─── HERO ────────────────────────────────────────────── -->
+  <section id="hero">
+    <div class="hero-eyebrow">AIAA 2025 Strike Fighter Design Competition</div>
+    <div class="hero-designation">F-44</div>
+    <h1 class="hero-title">FAL<span>CON</span></h1>
+    <p class="hero-subtitle">
+      Next-generation carrier-based strike fighter designed to replace the F/A-18E/F Super Hornet — with extended combat radius, internal weapons carriage, and advanced survivability.
+    </p>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="val">M<span>1.49</span></div>
+        <div class="lbl">Max Dash Speed</div>
+      </div>
+      <div class="hero-stat">
+        <div class="val">800 <span>nmi</span></div>
+        <div class="lbl">Combat Radius</div>
+      </div>
+      <div class="hero-stat">
+        <div class="val">42,567 <span>lb</span></div>
+        <div class="lbl">Max Takeoff Weight</div>
+      </div>
+      <div class="hero-stat">
+        <div class="val">2×<span>F404</span></div>
+        <div class="lbl">Powerplant</div>
+      </div>
+    </div>
+
+    <div class="hero-cta">
+      <a href="#overview" class="btn btn-primary">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        Explore Aircraft
+      </a>
+      <a href="#missions" class="btn btn-outline">Mission Profiles</a>
+    </div>
+  </section>
+
+  <!-- ─── OVERVIEW ────────────────────────────────────────── -->
+  <section id="overview">
+    <div class="section-inner">
+      <p class="section-label">Aircraft Overview</p>
+      <h2 class="section-title">Designed for <span>Carrier Superiority</span></h2>
+      <div class="divider"></div>
+
+      <div class="overview-grid">
+        <div class="overview-text fade-in">
+          <p>
+            The F-44 Falcon is a twin-engine, carrier-based strike fighter conceived to meet and exceed the AIAA 2025 Request for Proposal. Developed by Team ALEBORNE at San Diego State University, the F-44 addresses the U.S. Navy's need for a successor to the F/A-18E/F Super Hornet.
+          </p>
+          <p>
+            The aircraft features an internal weapons bay for improved low-observable characteristics, a blended delta-wing planform optimized for both high-speed dash and carrier approach stability, and twin F404 turbofan engines providing sufficient thrust for catapult launch and arrested landing operations.
+          </p>
+          <p>
+            At a combat radius of 800 nmi — 14% beyond the 700 nmi requirement — the F-44 delivers meaningful range expansion without sacrificing the maneuverability and payload flexibility demanded by multi-role carrier operations.
+          </p>
+          <div class="overview-badges">
+            <span class="badge"><span class="dot"></span> Carrier-Based</span>
+            <span class="badge"><span class="dot"></span> Internal Weapons Bay</span>
+            <span class="badge"><span class="dot"></span> Supersonic Capable</span>
+            <span class="badge"><span class="dot"></span> Twin-Engine</span>
+            <span class="badge"><span class="dot"></span> Multi-Role</span>
+            <span class="badge"><span class="dot"></span> Folding Wing</span>
+          </div>
+        </div>
+
+        <div class="overview-image fade-in">
+          <img src="ENGINE_CONFIG_DRAWING.png" alt="F-44 Falcon Engine Configuration Drawing" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── SPECIFICATIONS ──────────────────────────────────── -->
+  <section id="specs">
+    <div class="section-inner">
+      <p class="section-label">Technical Specifications</p>
+      <h2 class="section-title">By the <span>Numbers</span></h2>
+      <div class="divider"></div>
+      <p class="section-desc">Key performance parameters and geometric characteristics of the F-44 Falcon as derived from the conceptual design study.</p>
+
+      <div class="specs-grid">
+
+        <!-- Performance -->
+        <div class="spec-card fade-in">
+          <div class="spec-icon">⚡</div>
+          <div class="spec-label">Max Dash Speed</div>
+          <div class="spec-value">M 1.49</div>
+          <div class="spec-unit">at 30,000 ft</div>
+        </div>
+
+        <div class="spec-card fade-in">
+          <div class="spec-icon">🎯</div>
+          <div class="spec-label">Combat Radius</div>
+          <div class="spec-value">800</div>
+          <div class="spec-unit">nautical miles</div>
+        </div>
+
+        <div class="spec-card fade-in">
+          <div class="spec-icon">🛬</div>
+          <div class="spec-label">Approach Speed</div>
+          <div class="spec-value">144</div>
+          <div class="spec-unit">KTAS (carrier approach)</div>
+        </div>
+
+        <div class="spec-card fade-in">
+          <div class="spec-icon">🚀</div>
+          <div class="spec-label">Catapult End Speed</div>
+          <div class="spec-value">183</div>
+          <div class="spec-unit">KTAS</div>
+        </div>
+
+        <!-- Weights -->
+        <div class="spec-card fade-in">
+          <div class="spec-icon">⚖️</div>
+          <div class="spec-label">Max Takeoff Weight</div>
+          <div class="spec-value">42,567</div>
+          <div class="spec-unit">lb (A2A mission)</div>
+        </div>
+
+        <div class="spec-card fade-in">
+          <div class="spec-icon">🪶</div>
+          <div class="spec-label">Empty Weight (Strike)</div>
+          <div class="spec-value">26,236</div>
+          <div class="spec-unit">lb operating empty</div>
+        </div>
+
+        <div class="spec-card fade-in">
+          <div class="spec-icon">⛽</div>
+          <div class="spec-label">Internal Fuel (Strike)</div>
+          <div class="spec-value">18,276</div>
+          <div class="spec-unit">lb</div>
+        </div>
+
+        <div class="spec-card fade-in">
+          <div class="spec-icon">💣</div>
+          <div class="spec-label">Weapons Payload</div>
+          <div class="spec-value">7,600</div>
+          <div class="spec-unit">lb (strike)</div>
+        </div>
+
+        <!-- Geometry -->
+        <div class="spec-card fade-in">
+          <div class="spec-icon">📐</div>
+          <div class="spec-label">Wingspan (Unfolded)</div>
+          <div class="spec-value">41.5</div>
+          <div class="spec-unit">ft</div>
+        </div>
+
+        <div class="spec-card fade-in">
+          <div class="spec-icon">📏</div>
+          <div class="spec-label">Wingspan (Folded)</div>
+          <div class="spec-value">37.5</div>
+          <div class="spec-unit">ft (carrier storage)</div>
+        </div>
+
+        <div class="spec-card fade-in">
+          <div class="spec-icon">↔️</div>
+          <div class="spec-label">Aircraft Length</div>
+          <div class="spec-value">50</div>
+          <div class="spec-unit">ft</div>
+        </div>
+
+        <div class="spec-card fade-in">
+          <div class="spec-icon">↕️</div>
+          <div class="spec-label">Aircraft Height</div>
+          <div class="spec-value">14.16</div>
+          <div class="spec-unit">ft</div>
+        </div>
+
+        <div class="spec-card fade-in">
+          <div class="spec-icon">🔷</div>
+          <div class="spec-label">Wing Area</div>
+          <div class="spec-value">400</div>
+          <div class="spec-unit">ft²</div>
+        </div>
+
+        <div class="spec-card fade-in">
+          <div class="spec-icon">🔩</div>
+          <div class="spec-label">Powerplant</div>
+          <div class="spec-value">2× F404</div>
+          <div class="spec-unit">turbofan engines</div>
+        </div>
+
+        <div class="spec-card fade-in">
+          <div class="spec-icon">📊</div>
+          <div class="spec-label">Thrust-to-Weight</div>
+          <div class="spec-value">0.75</div>
+          <div class="spec-unit">at max takeoff weight</div>
+        </div>
+
+        <div class="spec-card fade-in">
+          <div class="spec-icon">🛡️</div>
+          <div class="spec-label">Weapons Bay</div>
+          <div class="spec-value">Internal</div>
+          <div class="spec-unit">low-observable carriage</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── MISSIONS ─────────────────────────────────────────── -->
+  <section id="missions">
+    <div class="section-inner">
+      <p class="section-label">Mission Profiles</p>
+      <h2 class="section-title">Dual-Role <span>Capability</span></h2>
+      <div class="divider"></div>
+      <p class="section-desc">The F-44 is optimized for two primary mission profiles as defined by the AIAA RFP, each requiring a 700 nmi combat radius from carrier basing.</p>
+
+      <div class="missions-grid">
+
+        <!-- Air-to-Air Card -->
+        <div class="mission-card a2a fade-in">
+          <div class="mission-header">
+            <div class="mission-type">Primary Mission</div>
+            <div class="mission-name">Air-to-Air</div>
+            <span class="mission-badge">Fleet Defense / CAP</span>
+          </div>
+          <div class="mission-body">
+            <div class="mission-stat-row">
+              <span class="key">Combat Radius</span>
+              <span class="val">700 nmi</span>
+            </div>
+            <div class="mission-stat-row">
+              <span class="key">Max Takeoff Weight</span>
+              <span class="val">42,567 lb</span>
+            </div>
+            <div class="mission-stat-row">
+              <span class="key">Fuel Weight</span>
+              <span class="val">18,540 lb</span>
+            </div>
+            <div class="mission-stat-row">
+              <span class="key">Combat Loiter</span>
+              <span class="val">2 min AB + 20 min</span>
+            </div>
+
+            <div class="payload-list">
+              <h4>Weapons Loadout</h4>
+              <div class="payload-item"><span class="qty">6×</span> AIM-120C AMRAAM</div>
+              <div class="payload-item"><span class="qty">2×</span> AIM-9X Sidewinder</div>
+            </div>
+
+            <div class="mission-profile">
+              <h4>Mission Phases</h4>
+              <div class="mission-phases">
+                <div class="phase">
+                  <div class="phase-icon active">🚀</div>
+                  <div class="phase-label">Launch</div>
+                </div>
+                <div class="phase-arrow">›</div>
+                <div class="phase">
+                  <div class="phase-icon active">✈️</div>
+                  <div class="phase-label">Cruise Out</div>
+                </div>
+                <div class="phase-arrow">›</div>
+                <div class="phase">
+                  <div class="phase-icon active">⚔️</div>
+                  <div class="phase-label">Combat</div>
+                </div>
+                <div class="phase-arrow">›</div>
+                <div class="phase">
+                  <div class="phase-icon active">↩️</div>
+                  <div class="phase-label">Return</div>
+                </div>
+                <div class="phase-arrow">›</div>
+                <div class="phase">
+                  <div class="phase-icon active">🛬</div>
+                  <div class="phase-label">Recovery</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Strike Card -->
+        <div class="mission-card strike fade-in">
+          <div class="mission-header">
+            <div class="mission-type">Secondary Mission</div>
+            <div class="mission-name">Strike</div>
+            <span class="mission-badge">Deep Strike / CAS</span>
+          </div>
+          <div class="mission-body">
+            <div class="mission-stat-row">
+              <span class="key">Combat Radius</span>
+              <span class="val">700 nmi</span>
+            </div>
+            <div class="mission-stat-row">
+              <span class="key">Max Takeoff Weight</span>
+              <span class="val">52,112 lb</span>
+            </div>
+            <div class="mission-stat-row">
+              <span class="key">Fuel Weight</span>
+              <span class="val">18,276 lb</span>
+            </div>
+            <div class="mission-stat-row">
+              <span class="key">Weapons Payload</span>
+              <span class="val">7,600 lb</span>
+            </div>
+
+            <div class="payload-list">
+              <h4>Weapons Loadout</h4>
+              <div class="payload-item"><span class="qty">4×</span> MK-83 JDAM (1,000 lb)</div>
+              <div class="payload-item"><span class="qty">2×</span> AIM-9X Sidewinder</div>
+            </div>
+
+            <div class="mission-profile">
+              <h4>Mission Phases</h4>
+              <div class="mission-phases">
+                <div class="phase">
+                  <div class="phase-icon active">🚀</div>
+                  <div class="phase-label">Launch</div>
+                </div>
+                <div class="phase-arrow">›</div>
+                <div class="phase">
+                  <div class="phase-icon active">✈️</div>
+                  <div class="phase-label">Cruise Out</div>
+                </div>
+                <div class="phase-arrow">›</div>
+                <div class="phase">
+                  <div class="phase-icon active">💣</div>
+                  <div class="phase-label">Weapons Drop</div>
+                </div>
+                <div class="phase-arrow">›</div>
+                <div class="phase">
+                  <div class="phase-icon active">↩️</div>
+                  <div class="phase-label">Egress</div>
+                </div>
+                <div class="phase-arrow">›</div>
+                <div class="phase">
+                  <div class="phase-icon active">🛬</div>
+                  <div class="phase-label">Recovery</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── ABOUT BANNER ─────────────────────────────────────── -->
+  <section id="about-banner">
+    <div class="about-inner fade-in">
+      <p>
+        Developed as part of the AIAA Aircraft Design Competition, AE 460A/B at San Diego State University.
+        Team ALEBORNE conducted a full conceptual design study — from mission analysis and initial sizing through
+        aerodynamics, propulsion, structures, and life-cycle cost estimation — delivering a complete aircraft design
+        ready for preliminary design phase.
+      </p>
+      <div class="about-meta">
+        <div class="about-meta-item">
+          <span class="m-val">7</span>
+          <span class="m-lbl">Team Members</span>
+        </div>
+        <div class="about-meta-item">
+          <span class="m-val">10+</span>
+          <span class="m-lbl">Technical Memos</span>
+        </div>
+        <div class="about-meta-item">
+          <span class="m-val">2025</span>
+          <span class="m-lbl">AIAA Competition</span>
+        </div>
+        <div class="about-meta-item">
+          <span class="m-val">SDSU</span>
+          <span class="m-lbl">San Diego State Univ.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── TEAM ─────────────────────────────────────────────── -->
+  <section id="team">
+    <div class="section-inner">
+      <p class="section-label">The People Behind It</p>
+      <h2 class="section-title">Team <span style="color:var(--accent)">ALEBORNE</span></h2>
+      <div class="divider" style="background: linear-gradient(90deg, var(--accent), var(--blue));"></div>
+      <p class="section-desc">Seven aerospace engineering students at San Diego State University, collaborating across all aircraft design disciplines.</p>
+
+      <div class="team-grid">
+
+        <div class="team-card fade-in">
+          <div class="team-avatar">MO</div>
+          <div class="team-name">Maxwell O'Neill</div>
+          <div class="team-role">Aerodynamics</div>
+          <div class="team-school">SDSU · AE 460</div>
+        </div>
+
+        <div class="team-card fade-in">
+          <div class="team-avatar">EB</div>
+          <div class="team-name">Etan Barichievich</div>
+          <div class="team-role">Propulsion</div>
+          <div class="team-school">SDSU · AE 460</div>
+        </div>
+
+        <div class="team-card fade-in">
+          <div class="team-avatar">IP</div>
+          <div class="team-name">Ian Plant</div>
+          <div class="team-role">Structures</div>
+          <div class="team-school">SDSU · AE 460</div>
+        </div>
+
+        <div class="team-card fade-in">
+          <div class="team-avatar">WP</div>
+          <div class="team-name">William Peterson</div>
+          <div class="team-role">Weights & Balance</div>
+          <div class="team-school">SDSU · AE 460</div>
+        </div>
+
+        <div class="team-card fade-in">
+          <div class="team-avatar">BS</div>
+          <div class="team-name">Bryce Sullins</div>
+          <div class="team-role">Performance</div>
+          <div class="team-school">SDSU · AE 460</div>
+        </div>
+
+        <div class="team-card fade-in">
+          <div class="team-avatar">BT</div>
+          <div class="team-name">Benjamin Torres</div>
+          <div class="team-role">Landing Gear & Systems</div>
+          <div class="team-school">SDSU · AE 460</div>
+        </div>
+
+        <div class="team-card fade-in">
+          <div class="team-avatar">LH</div>
+          <div class="team-name">Luke Horton</div>
+          <div class="team-role">Empennage & Layout</div>
+          <div class="team-school">SDSU · AE 460</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ───────────────────────────────────────────── -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">F-44 <span>FALCON</span></div>
+      <div class="footer-links">
+        <a href="#overview">Overview</a>
+        <a href="#specs">Specifications</a>
+        <a href="#missions">Missions</a>
+        <a href="#team">Team</a>
+      </div>
+      <p>Team ALEBORNE · AE 460A/B · San Diego State University · AIAA 2025 Strike Fighter Design Competition</p>
+      <p style="margin-top:0.5rem;">Designed for educational purposes as part of the AIAA Aircraft Design Competition.</p>
+    </div>
+  </footer>
+
+  <!-- ─── SCROLL ANIMATION JS ──────────────────────────────── -->
+  <script>
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+      { threshold: 0.12 }
+    );
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>

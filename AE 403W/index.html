@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AE 403W — Wing in Ground Effect Vehicle</title>
+  <style>
+    /* ── Reset & Base ───────────────────────────────────────────── */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: Arial, sans-serif; background: #0d0d0d; color: #f0f0f0; }
+
+    /* ── Header ─────────────────────────────────────────────────── */
+    header {
+      background: linear-gradient(135deg, #9b0000 0%, #CC0033 60%, #a80029 100%);
+      color: white;
+      padding: 50px 20px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 200px; height: 200px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 50%;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: -30px;
+      width: 280px; height: 280px;
+      background: rgba(255,255,255,0.04);
+      border-radius: 50%;
+    }
+    header h1 { font-size: 2.8em; margin-bottom: 10px; letter-spacing: -0.01em; }
+    header p  { font-size: 1.15em; opacity: 0.92; }
+
+    /* ── Countdown Strip ─────────────────────────────────────────── */
+    .countdown-strip {
+      background: #000;
+      border-bottom: 2px solid #CC0033;
+      padding: 16px 20px;
+      text-align: center;
+    }
+    .countdown-strip .strip-label {
+      color: #CC0033;
+      font-weight: bold;
+      font-size: 0.75em;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .countdown-units {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+    .countdown-unit { text-align: center; min-width: 54px; }
+    .countdown-unit .num {
+      font-size: 2.2em;
+      font-weight: bold;
+      color: #fff;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .countdown-unit .unit-label {
+      font-size: 0.65em;
+      color: #CC0033;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-top: 3px;
+    }
+    .countdown-divider { color: #333; font-size: 2em; line-height: 1; padding-top: 2px; }
+
+    /* ── Nav ─────────────────────────────────────────────────────── */
+    nav {
+      background: #111;
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      padding: 14px 20px;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid #1e1e1e;
+    }
+    nav a {
+      color: #ccc;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.9em;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: #CC0033; }
+
+    /* ── Sections ────────────────────────────────────────────────── */
+    section {
+      max-width: 960px;
+      margin: 56px auto;
+      padding: 0 24px;
+    }
+    section h2 {
+      font-size: 1.75em;
+      color: #CC0033;
+      border-bottom: 2px solid #CC0033;
+      padding-bottom: 8px;
+      margin-bottom: 24px;
+    }
+    section p { line-height: 1.75; margin-bottom: 16px; color: #ccc; }
+
+    /* ── Scroll Animations ───────────────────────────────────────── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+    .fade-up.delay-1 { transition-delay: 0.1s; }
+    .fade-up.delay-2 { transition-delay: 0.2s; }
+    .fade-up.delay-3 { transition-delay: 0.3s; }
+    .fade-up.delay-4 { transition-delay: 0.4s; }
+    .fade-up.delay-5 { transition-delay: 0.5s; }
+
+    /* ── Stat Boxes ──────────────────────────────────────────────── */
+    .stats {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+    .stat-box {
+      background: #161616;
+      border: 1px solid #2a2a2a;
+      border-top: 3px solid #CC0033;
+      border-radius: 8px;
+      padding: 20px 24px;
+      text-align: center;
+      flex: 1;
+      min-width: 130px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .stat-box:hover { border-color: #CC0033; transform: translateY(-3px); }
+    .stat-box .number { font-size: 1.9em; color: #CC0033; font-weight: bold; }
+    .stat-box .label  { font-size: 0.8em; color: #888; margin-top: 5px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* ── Project Timeline ────────────────────────────────────────── */
+    .timeline-section { background: #0a0a0a; padding: 56px 0; margin: 56px 0; }
+    .timeline-section > .inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .timeline-section h2 {
+      font-size: 1.75em;
+      color: #CC0033;
+      border-bottom: 2px solid #CC0033;
+      padding-bottom: 8px;
+      margin-bottom: 40px;
+    }
+
+    /* Desktop timeline */
+    .timeline-track {
+      display: flex;
+      align-items: flex-start;
+      position: relative;
+      padding-bottom: 24px;
+    }
+    .timeline-track::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      right: 20px;
+      height: 3px;
+      background: #222;
+      z-index: 0;
+    }
+    .timeline-progress-bar {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      height: 3px;
+      background: #CC0033;
+      z-index: 1;
+      transition: width 1.2s ease;
+      width: 0;
+    }
+    .timeline-progress-bar.animated { width: 28%; } /* current = 3rd of 6 milestones */
+
+    .milestone {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      z-index: 2;
+      cursor: default;
+    }
+    .milestone-dot {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1em;
+      font-weight: bold;
+      border: 3px solid #333;
+      background: #0a0a0a;
+      margin-bottom: 12px;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .milestone:hover .milestone-dot { transform: scale(1.15); }
+
+    .milestone.done .milestone-dot {
+      background: #CC0033;
+      border-color: #CC0033;
+      color: white;
+    }
+    .milestone.current .milestone-dot {
+      background: #CC0033;
+      border-color: #CC0033;
+      color: white;
+      box-shadow: 0 0 0 0 rgba(204,0,51,0.6);
+      animation: pulse-ring 1.8s ease-out infinite;
+    }
+    @keyframes pulse-ring {
+      0%   { box-shadow: 0 0 0 0 rgba(204,0,51,0.6); }
+      70%  { box-shadow: 0 0 0 12px rgba(204,0,51,0); }
+      100% { box-shadow: 0 0 0 0 rgba(204,0,51,0); }
+    }
+    .milestone.upcoming .milestone-dot {
+      background: #0a0a0a;
+      border-color: #333;
+      color: #555;
+    }
+
+    .milestone-info { text-align: center; padding: 0 4px; }
+    .milestone-weeks {
+      font-size: 0.7em;
+      color: #CC0033;
+      font-weight: bold;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .milestone-title {
+      font-size: 0.82em;
+      font-weight: bold;
+      color: #f0f0f0;
+      margin-bottom: 4px;
+    }
+    .milestone-status {
+      font-size: 0.68em;
+      padding: 2px 8px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-top: 2px;
+    }
+    .status-done     { background: #1a3a1a; color: #4caf50; }
+    .status-current  { background: #3a0a14; color: #FF6680; }
+    .status-upcoming { background: #1a1a1a; color: #666; }
+
+    /* Mobile timeline */
+    .timeline-mobile { display: none; }
+    .m-milestone {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      align-items: flex-start;
+    }
+    .m-dot-col { display: flex; flex-direction: column; align-items: center; }
+    .m-dot {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9em;
+      font-weight: bold;
+      border: 3px solid #333;
+      background: #0a0a0a;
+      flex-shrink: 0;
+    }
+    .m-dot.done    { background: #CC0033; border-color: #CC0033; color: white; }
+    .m-dot.current { background: #CC0033; border-color: #CC0033; color: white; animation: pulse-ring 1.8s ease-out infinite; }
+    .m-dot.upcoming { background: #0a0a0a; border-color: #333; color: #555; }
+    .m-line { width: 2px; background: #222; flex: 1; margin: 4px 0 0; min-height: 24px; }
+    .m-line.done { background: #CC0033; }
+    .m-info { padding-top: 6px; padding-bottom: 4px; }
+    .m-weeks { font-size: 0.7em; color: #CC0033; font-weight: bold; letter-spacing: 0.1em; text-transform: uppercase; }
+    .m-title { font-size: 0.9em; font-weight: bold; color: #f0f0f0; margin: 2px 0; }
+    .m-desc  { font-size: 0.8em; color: #888; line-height: 1.5; }
+
+    /* ── Budget Tracker ──────────────────────────────────────────── */
+    .budget-card {
+      background: #161616;
+      border: 1px solid #2a2a2a;
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 24px;
+    }
+    .budget-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .budget-total-label { font-size: 0.8em; color: #888; text-transform: uppercase; letter-spacing: 0.08em; }
+    .budget-total-num { font-size: 2.4em; font-weight: bold; color: #fff; line-height: 1; }
+    .budget-badge {
+      background: #1a2e1a;
+      color: #4caf50;
+      font-size: 0.75em;
+      font-weight: bold;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid #2d5a2d;
+      letter-spacing: 0.05em;
+    }
+    .budget-main-bar-wrap {
+      background: #222;
+      border-radius: 6px;
+      height: 10px;
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+    .budget-main-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #9b0000, #CC0033);
+      border-radius: 6px;
+      width: 0;
+      transition: width 1.3s ease;
+    }
+    .budget-main-bar.animated { width: 76%; }
+
+    .budget-categories { display: flex; flex-direction: column; gap: 16px; }
+    .budget-cat {  }
+    .budget-cat-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      font-size: 0.85em;
+    }
+    .budget-cat-name { color: #ccc; font-weight: bold; }
+    .budget-cat-amount { color: #CC0033; font-weight: bold; }
+    .budget-cat-bar-wrap {
+      background: #222;
+      border-radius: 4px;
+      height: 7px;
+      overflow: hidden;
+    }
+    .budget-cat-bar {
+      height: 100%;
+      border-radius: 4px;
+      width: 0;
+      transition: width 1.2s ease;
+    }
+    .budget-cat-bar.animated { width: var(--pct); }
+    .bar-propulsion { background: linear-gradient(90deg, #8a0000, #CC0033); }
+    .bar-airframe   { background: linear-gradient(90deg, #7a1520, #b8002d); }
+    .bar-control    { background: linear-gradient(90deg, #6a0020, #a0002a); }
+    .bar-avionics   { background: linear-gradient(90deg, #5a001a, #880025); }
+
+    .budget-legend {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #222;
+      font-size: 0.78em;
+      color: #888;
+    }
+    .budget-legend span { font-weight: bold; color: #ccc; }
+
+    /* ── 3D Model ────────────────────────────────────────────────── */
+    .model-wrap {
+      width: 100%;
+      height: 480px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #111;
+      border: 2px solid #CC0033;
+      margin-bottom: 10px;
+    }
+    .model-wrap iframe { width: 100%; height: 100%; border: 0; }
+
+    /* ── Team ────────────────────────────────────────────────────── */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 20px;
+    }
+    .team-member {
+      background: #161616;
+      border: 1px solid #222;
+      border-radius: 10px;
+      padding: 24px 16px;
+      text-align: center;
+      transition: border-color 0.25s, transform 0.25s;
+    }
+    .team-member:hover { border-color: #CC0033; transform: translateY(-4px); }
+    .team-member img {
+      width: 110px; height: 110px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: center top;
+      border: 3px solid #CC0033;
+      margin-bottom: 14px;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .team-member .name { font-weight: bold; font-size: 1.05em; color: #fff; }
+    .team-member .role { font-size: 0.8em; color: #888; margin-top: 5px; }
+
+    /* ── Build Log ───────────────────────────────────────────────── */
+    .update-card {
+      background: #161616;
+      border-left: 4px solid #CC0033;
+      border-radius: 6px;
+      padding: 18px 22px;
+      margin-bottom: 18px;
+      transition: background 0.2s;
+    }
+    .update-card:hover { background: #1a1a1a; }
+    .update-card .date  { font-size: 0.78em; color: #CC0033; margin-bottom: 6px; font-weight: bold; letter-spacing: 0.06em; }
+    .update-card h3     { font-size: 1.1em; margin-bottom: 8px; color: #f0f0f0; }
+    .update-card p      { margin: 0 0 12px 0; font-size: 0.93em; color: #bbb; line-height: 1.65; }
+
+    /* ── Media / Photos ──────────────────────────────────────────── */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+    .photo-grid img {
+      width: 100%;
+      border-radius: 8px;
+      border: 2px solid #222;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .photo-grid img:hover { border-color: #CC0033; transform: scale(1.02); }
+
+    .video-wrap {
+      position: relative;
+      padding-bottom: 56.25%;
+      margin-bottom: 24px;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid #222;
+    }
+    .video-wrap iframe { position: absolute; width: 100%; height: 100%; border: 0; }
+
+    .media-label {
+      color: #CC0033;
+      font-weight: bold;
+      font-size: 0.9em;
+      margin: 28px 0 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    /* ── Footer ──────────────────────────────────────────────────── */
+    footer {
+      background: #000;
+      text-align: center;
+      padding: 28px;
+      color: #444;
+      font-size: 0.82em;
+      margin-top: 70px;
+      border-top: 2px solid #CC0033;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Mobile Responsive ───────────────────────────────────────── */
+    @media (max-width: 768px) {
+      header h1 { font-size: 1.9em; }
+      header p  { font-size: 1em; }
+      nav { gap: 16px; padding: 12px 16px; }
+      nav a { font-size: 0.8em; }
+      section { margin: 40px auto; padding: 0 16px; }
+      .countdown-units { gap: 16px; }
+      .countdown-unit .num { font-size: 1.7em; }
+      .countdown-divider { font-size: 1.5em; }
+      .stat-box .number { font-size: 1.5em; }
+      .timeline-track { display: none; }
+      .timeline-progress-bar { display: none; }
+      .timeline-mobile { display: block; }
+      .team-grid { grid-template-columns: repeat(2, 1fr); }
+      .budget-card { padding: 20px; }
+      .budget-total-num { font-size: 2em; }
+      .model-wrap { height: 320px; }
+    }
+    @media (max-width: 480px) {
+      header h1 { font-size: 1.5em; }
+      .team-grid { grid-template-columns: 1fr 1fr; }
+      .stats { gap: 10px; }
+      .stat-box { min-width: 100px; padding: 14px 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ HEADER ════════════════════════════════════════════════════ -->
+<header>
+  <h1>Wing in Ground Effect Vehicle</h1>
+  <p>AE 403W Senior Design Project &nbsp;·&nbsp; San Diego State University &nbsp;·&nbsp; Spring 2026</p>
+</header>
+
+<!-- ═══ COUNTDOWN ═════════════════════════════════════════════════ -->
+<div class="countdown-strip">
+  <div class="strip-label">🚀 First Flight Target — April 11, 2026</div>
+  <div class="countdown-units">
+    <div class="countdown-unit">
+      <div class="num" id="cd-days">--</div>
+      <div class="unit-label">Days</div>
+    </div>
+    <div class="countdown-divider">:</div>
+    <div class="countdown-unit">
+      <div class="num" id="cd-hours">--</div>
+      <div class="unit-label">Hours</div>
+    </div>
+    <div class="countdown-divider">:</div>
+    <div class="countdown-unit">
+      <div class="num" id="cd-mins">--</div>
+      <div class="unit-label">Minutes</div>
+    </div>
+    <div class="countdown-divider">:</div>
+    <div class="countdown-unit">
+      <div class="num" id="cd-secs">--</div>
+      <div class="unit-label">Seconds</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ NAV ═══════════════════════════════════════════════════════ -->
+<nav>
+  <a href="#about">About</a>
+  <a href="#specs">Specs</a>
+  <a href="#timeline">Timeline</a>
+  <a href="#budget">Budget</a>
+  <a href="#model">3D Model</a>
+  <a href="#progress">Build Log</a>
+  <a href="#team">Team</a>
+  <a href="#media">Media</a>
+</nav>
+
+<!-- ═══ ABOUT ═════════════════════════════════════════════════════ -->
+<section id="about">
+  <h2 class="fade-up">About the Project</h2>
+  <p class="fade-up delay-1">
+    We are a team of four aerospace engineering students at SDSU building a radio-controlled
+    Wing in Ground Effect (WIG) vehicle — a craft that exploits the aerodynamic advantage of
+    flying very close to a surface to dramatically increase efficiency. Our prototype
+    demonstrates ground effect at RC scale using 3D printing, carbon fiber, and a custom
+    flight controller setup.
+  </p>
+  <p class="fade-up delay-2">
+    Ground effect occurs when a wing flies within roughly one wingspan of the ground.
+    The surface disrupts wingtip vortices, reducing induced drag and increasing lift —
+    meaning the vehicle can fly faster or carry more weight for the same power.
+  </p>
+
+  <div class="stats">
+    <div class="stat-box fade-up delay-1">
+      <div class="number">5.4 ft</div>
+      <div class="label">Wingspan</div>
+    </div>
+    <div class="stat-box fade-up delay-2">
+      <div class="number">5.4</div>
+      <div class="label">Aspect Ratio</div>
+    </div>
+    <div class="stat-box fade-up delay-3">
+      <div class="number">4</div>
+      <div class="label">Motors</div>
+    </div>
+    <div class="stat-box fade-up delay-4">
+      <div class="number">10–12 lb</div>
+      <div class="label">Est. Weight</div>
+    </div>
+    <div class="stat-box fade-up delay-5">
+      <div class="number">FX 63-137</div>
+      <div class="label">Airfoil</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SPECS ══════════════════════════════════════════════════════ -->
+<section id="specs">
+  <h2 class="fade-up">Design Specifications</h2>
+  <p class="fade-up delay-1"><strong>Airfoil:</strong> FX 63-137 — high-lift, low-speed, proven in ground effect vehicle designs</p>
+  <p class="fade-up delay-1"><strong>Wingspan:</strong> 5.4 ft (5.8 ft with winglets)</p>
+  <p class="fade-up delay-1"><strong>Mean Chord:</strong> 12 inches &nbsp;|&nbsp; <strong>Wing Area:</strong> 5.4 ft² &nbsp;|&nbsp; <strong>Outboard Anhedral:</strong> 15°</p>
+  <p class="fade-up delay-2"><strong>Propulsion:</strong> 4× BrotherHobby Tornado T5 3115 Pro motors, 4× Skywalker V2 ESCs</p>
+  <p class="fade-up delay-2"><strong>Battery:</strong> 2× Ovonic 6S LiPo 5200mAh &nbsp;|&nbsp; <strong>PDB:</strong> Matek X Class 12S</p>
+  <p class="fade-up delay-3"><strong>Flight Controller:</strong> Holybro Pixhawk 6C with dual GPS (PX4 / ArduPilot)</p>
+  <p class="fade-up delay-3"><strong>Rangefinder:</strong> Benewake TFmini-S LiDAR altimeter for ride height measurement</p>
+  <p class="fade-up delay-3"><strong>RC System:</strong> RadioMaster Boxer + ELRS receiver &nbsp;|&nbsp; <strong>Telemetry:</strong> 3DR 500mW 915MHz kit</p>
+  <p class="fade-up delay-4"><strong>Structure:</strong> 3D printed ASA + ABS over carbon fiber spar skeleton</p>
+  <p class="fade-up delay-4"><strong>Servos:</strong> 5× Hosyond DS3225 25kg high-torque metal gear</p>
+</section>
+
+<!-- ═══ TIMELINE ═══════════════════════════════════════════════════ -->
+<div class="timeline-section" id="timeline">
+  <div class="inner">
+    <h2 class="fade-up">Project Timeline</h2>
+
+    <!-- Desktop timeline -->
+    <div class="timeline-track fade-up delay-1">
+      <div class="timeline-progress-bar" id="timeline-bar"></div>
+
+      <div class="milestone done">
+        <div class="milestone-dot">✓</div>
+        <div class="milestone-info">
+          <div class="milestone-weeks">Wks 1–4</div>
+          <div class="milestone-title">Research &amp; Design</div>
+          <div class="milestone-status status-done">Complete</div>
+        </div>
+      </div>
+
+      <div class="milestone done">
+        <div class="milestone-dot">✓</div>
+        <div class="milestone-info">
+          <div class="milestone-weeks">Wks 5–6</div>
+          <div class="milestone-title">Procurement &amp; Printing Begins</div>
+          <div class="milestone-status status-done">Complete</div>
+        </div>
+      </div>
+
+      <div class="milestone current">
+        <div class="milestone-dot">▶</div>
+        <div class="milestone-info">
+          <div class="milestone-weeks">Wks 7–9</div>
+          <div class="milestone-title">Build &amp; Electronics</div>
+          <div class="milestone-status status-current">In Progress ← Now</div>
+        </div>
+      </div>
+
+      <div class="milestone upcoming">
+        <div class="milestone-dot">○</div>
+        <div class="milestone-info">
+          <div class="milestone-weeks">Wks 10–11</div>
+          <div class="milestone-title">Flight Testing</div>
+          <div class="milestone-status status-upcoming">Upcoming</div>
+        </div>
+      </div>
+
+      <div class="milestone upcoming">
+        <div class="milestone-dot">○</div>
+        <div class="milestone-info">
+          <div class="milestone-weeks">Wk 12</div>
+          <div class="milestone-title">CFD Analysis</div>
+          <div class="milestone-status status-upcoming">Upcoming</div>
+        </div>
+      </div>
+
+      <div class="milestone upcoming">
+        <div class="milestone-dot">○</div>
+        <div class="milestone-info">
+          <div class="milestone-weeks">Wks 13–14</div>
+          <div class="milestone-title">Final Report</div>
+          <div class="milestone-status status-upcoming">Upcoming</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile timeline -->
+    <div class="timeline-mobile">
+      <div class="m-milestone fade-up">
+        <div class="m-dot-col"><div class="m-dot done">✓</div><div class="m-line done"></div></div>
+        <div class="m-info"><div class="m-weeks">Weeks 1–4</div><div class="m-title">Research &amp; Design</div><div class="m-desc">Airfoil trade study, requirements locked, SolidWorks model</div></div>
+      </div>
+      <div class="m-milestone fade-up">
+        <div class="m-dot-col"><div class="m-dot done">✓</div><div class="m-line done"></div></div>
+        <div class="m-info"><div class="m-weeks">Weeks 5–6</div><div class="m-title">Procurement &amp; Printing Begins</div><div class="m-desc">All parts ordered &amp; received, nose cone &amp; fuselage printing started</div></div>
+      </div>
+      <div class="m-milestone fade-up">
+        <div class="m-dot-col"><div class="m-dot current">▶</div><div class="m-line"></div></div>
+        <div class="m-info"><div class="m-weeks">Weeks 7–9 ← NOW</div><div class="m-title">Build &amp; Electronics</div><div class="m-desc">Finish printing, bench test all electronics, complete full assembly</div></div>
+      </div>
+      <div class="m-milestone fade-up">
+        <div class="m-dot-col"><div class="m-dot upcoming">○</div><div class="m-line"></div></div>
+        <div class="m-info"><div class="m-weeks">Weeks 10–11</div><div class="m-title">Flight Testing</div><div class="m-desc">Ground effect testing, ride height and stability data collection</div></div>
+      </div>
+      <div class="m-milestone fade-up">
+        <div class="m-dot-col"><div class="m-dot upcoming">○</div><div class="m-line"></div></div>
+        <div class="m-info"><div class="m-weeks">Week 12</div><div class="m-title">CFD Analysis</div><div class="m-desc">Run CFD, compare simulated vs. measured results</div></div>
+      </div>
+      <div class="m-milestone fade-up">
+        <div class="m-dot-col"><div class="m-dot upcoming">○</div></div>
+        <div class="m-info"><div class="m-weeks">Weeks 13–14</div><div class="m-title">Final Report</div><div class="m-desc">Finalize figures, polish and submit final report</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ BUDGET ═════════════════════════════════════════════════════ -->
+<section id="budget">
+  <h2 class="fade-up">Project Budget</h2>
+
+  <div class="budget-card fade-up delay-1">
+    <div class="budget-header">
+      <div>
+        <div class="budget-total-label">Total Budget</div>
+        <div class="budget-total-num">$2,500.00</div>
+      </div>
+      <div class="budget-badge">✓ All Parts Purchased</div>
+    </div>
+
+    <!-- Main spend bar -->
+    <div style="display:flex; justify-content:space-between; font-size:0.8em; color:#888; margin-bottom:6px;">
+      <span>Spent: <strong style="color:#fff;">$1,899.57</strong></span>
+      <span>Remaining: <strong style="color:#4caf50;">$600.43</strong></span>
+    </div>
+    <div class="budget-main-bar-wrap">
+      <div class="budget-main-bar" id="main-budget-bar"></div>
+    </div>
+    <div style="text-align:right; font-size:0.75em; color:#555; margin-bottom:28px;">76% of budget used</div>
+
+    <div class="budget-categories">
+      <div class="budget-cat">
+        <div class="budget-cat-header">
+          <span class="budget-cat-name">Propulsion &amp; Power</span>
+          <span class="budget-cat-amount">$635.44 &nbsp;<span style="color:#555;font-weight:normal;">(25.4%)</span></span>
+        </div>
+        <div class="budget-cat-bar-wrap">
+          <div class="budget-cat-bar bar-propulsion" style="--pct: 25.4%"></div>
+        </div>
+      </div>
+
+      <div class="budget-cat">
+        <div class="budget-cat-header">
+          <span class="budget-cat-name">Airframe &amp; Hardware</span>
+          <span class="budget-cat-amount">$514.84 &nbsp;<span style="color:#555;font-weight:normal;">(20.6%)</span></span>
+        </div>
+        <div class="budget-cat-bar-wrap">
+          <div class="budget-cat-bar bar-airframe" style="--pct: 20.6%"></div>
+        </div>
+      </div>
+
+      <div class="budget-cat">
+        <div class="budget-cat-header">
+          <span class="budget-cat-name">Flight Controller &amp; Navigation</span>
+          <span class="budget-cat-amount">$444.36 &nbsp;<span style="color:#555;font-weight:normal;">(17.8%)</span></span>
+        </div>
+        <div class="budget-cat-bar-wrap">
+          <div class="budget-cat-bar bar-avionics" style="--pct: 17.8%"></div>
+        </div>
+      </div>
+
+      <div class="budget-cat">
+        <div class="budget-cat-header">
+          <span class="budget-cat-name">Control &amp; Actuation</span>
+          <span class="budget-cat-amount">$304.93 &nbsp;<span style="color:#555;font-weight:normal;">(12.2%)</span></span>
+        </div>
+        <div class="budget-cat-bar-wrap">
+          <div class="budget-cat-bar bar-control" style="--pct: 12.2%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="budget-legend">
+      <div>Motors &amp; ESCs: <span>$426.42</span></div>
+      <div>Carbon Fiber Spars: <span>$301.55</span></div>
+      <div>Batteries: <span>$122.34</span></div>
+      <div>Flight Controller: <span>$290.17</span></div>
+      <div>Servos: <span>$84.95</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 3D MODEL ═══════════════════════════════════════════════════ -->
+<section id="model">
+  <h2 class="fade-up">Interactive 3D Model</h2>
+
+  <div class="model-wrap fade-up delay-1">
+    <iframe
+      src="https://sketchfab.com/models/YOUR_MODEL_ID/embed?autostart=1&ui_theme=dark&transparent=1"
+      allow="autoplay; fullscreen; xr-spatial-tracking"
+      allowfullscreen>
+    </iframe>
+  </div>
+  <p style="color:#888; font-size:0.82em; margin-top:8px;" class="fade-up delay-2">
+    Drag to rotate &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Right-click to pan
+  </p>
+</section>
+
+<!-- ═══ BUILD LOG ══════════════════════════════════════════════════ -->
+<section id="progress">
+  <h2 class="fade-up">Build Log</h2>
+
+  <div class="update-card fade-up delay-1">
+    <div class="date">March 2026</div>
+    <h3>Weeks 7–9: Full Build Phase Underway</h3>
+    <p>Remaining electronics received. Bench testing motors and ESCs. Continuing 3D printing
+       of wing panels and control surfaces. Assembly of fuselage and spar structure in progress.</p>
+  </div>
+
+  <div class="update-card fade-up delay-2">
+    <div class="date">February 23, 2026</div>
+    <h3>Weeks 5–6: Parts Arrived, Printing Started</h3>
+    <p>Motors, ESCs, batteries, propellers, carbon fiber spars, and all filament arrived.
+       Nose cone, fuselage sections 1–3, and wing section 1 completed on the printer.</p>
+    <div class="photo-grid">
+      <img src="photos/NoseConeRev0.jpg" alt="Nose cone — first structural component off the printer">
+    </div>
+  </div>
+
+  <div class="update-card fade-up delay-3">
+    <div class="date">February 6, 2026</div>
+    <h3>Week 4: Design Finalized, Proposal Submitted</h3>
+    <p>Design locked: FX 63-137 airfoil, AR=5.4, 5.4ft wingspan, 4-motor distributed
+       propulsion. Full SolidWorks assembly completed. Proposal submitted and approved.</p>
+  </div>
+
+  <div class="update-card fade-up delay-4">
+    <div class="date">January 2026</div>
+    <h3>Weeks 1–3: Research &amp; Trade Studies</h3>
+    <p>Researched historical WIG vehicles (Caspian Sea Monster, Lun class, Orlyonok).
+       Completed airfoil trade study comparing FX 63-137, NACA 4412, and GAW-1.
+       Selected FX 63-137 for its superior low-speed high-lift characteristics.</p>
+  </div>
+</section>
+
+<!-- ═══ TEAM ═══════════════════════════════════════════════════════ -->
+<section id="team">
+  <h2 class="fade-up">The Team</h2>
+  <div class="team-grid">
+    <div class="team-member fade-up delay-1">
+      <img src="photos/LukeHeadshot.jpg" alt="Luke Horton">
+      <div class="name">Luke Horton</div>
+      <div class="role">Aerospace Engineering</div>
+    </div>
+    <div class="team-member fade-up delay-2">
+      <img src="photos/EthanHeadshot.jpg" alt="Ethan Barichievich">
+      <div class="name">Ethan Barichievich</div>
+      <div class="role">Aerospace Engineering</div>
+    </div>
+    <div class="team-member fade-up delay-3">
+      <img src="photos/WillieHeadshot.jpg" alt="Willie Peterson">
+      <div class="name">Willie Peterson</div>
+      <div class="role">Aerospace Engineering</div>
+    </div>
+    <div class="team-member fade-up delay-4">
+      <img src="photos/MaxwellHeadshot.jpg" alt="Maxwell O'Neill">
+      <div class="name">Maxwell O'Neill</div>
+      <div class="role">Aerospace Engineering</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MEDIA ══════════════════════════════════════════════════════ -->
+<section id="media">
+  <h2 class="fade-up">Media</h2>
+
+  <p class="media-label fade-up delay-1">3D Print Progress — Wing Component</p>
+  <div class="video-wrap fade-up delay-2">
+    <iframe
+      src="https://www.youtube.com/embed/FamB5fKXKnE"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+  </div>
+
+  <p class="media-label fade-up">Build Photos</p>
+  <div class="photo-grid fade-up delay-1">
+    <img src="photos/NoseConeRev0.jpg" alt="Nose cone — first structural component off the printer">
+    <!-- Add more photos: <img src="photos/filename.jpg" alt="description"> -->
+  </div>
+</section>
+
+<!-- ═══ FOOTER ════════════════════════════════════════════════════ -->
+<footer>
+  AE 403W &mdash; Wing in Ground Effect Vehicle &nbsp;|&nbsp; SDSU Aerospace Engineering &nbsp;|&nbsp; Spring 2026
+</footer>
+
+<!-- ═══ JAVASCRIPT ════════════════════════════════════════════════ -->
+<script>
+  /* ── Countdown Timer ──────────────────────────────────────────── */
+  const TARGET = new Date('2026-04-11T09:00:00');
+  function pad(n) { return String(n).padStart(2, '0'); }
+  function tick() {
+    const diff = TARGET - new Date();
+    if (diff <= 0) {
+      document.getElementById('cd-days').textContent  = '00';
+      document.getElementById('cd-hours').textContent = '00';
+      document.getElementById('cd-mins').textContent  = '00';
+      document.getElementById('cd-secs').textContent  = '00';
+      return;
+    }
+    document.getElementById('cd-days').textContent  = Math.floor(diff / 86400000);
+    document.getElementById('cd-hours').textContent = pad(Math.floor((diff % 86400000) / 3600000));
+    document.getElementById('cd-mins').textContent  = pad(Math.floor((diff % 3600000) / 60000));
+    document.getElementById('cd-secs').textContent  = pad(Math.floor((diff % 60000) / 1000));
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  /* ── Scroll Animations (Intersection Observer) ────────────────── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target); // animate once
+      }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  /* ── Budget & Timeline bar animation on scroll ────────────────── */
+  const barObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // Animate budget bars
+        document.getElementById('main-budget-bar').classList.add('animated');
+        document.querySelectorAll('.budget-cat-bar').forEach(b => b.classList.add('animated'));
+        // Animate timeline progress bar
+        document.getElementById('timeline-bar').classList.add('animated');
+        barObserver.disconnect();
+      }
+    });
+  }, { threshold: 0.2 });
+  const budgetCard = document.querySelector('.budget-card');
+  if (budgetCard) barObserver.observe(budgetCard);
+
+  const timelineBar = document.getElementById('timeline-bar');
+  if (timelineBar) {
+    const tlObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          timelineBar.classList.add('animated');
+          tlObserver.disconnect();
+        }
+      });
+    }, { threshold: 0.3 });
+    tlObserver.observe(timelineBar);
+  }
+</script>
+</body>
+</html>
