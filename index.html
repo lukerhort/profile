@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Luke R. Horton — Aerospace Engineer & Developer</title>
+<title>Luke R. Horton — Aerospace Engineer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
@@ -18,9 +18,9 @@
     --text-primary: #ededef;
     --text-secondary: #8a8a8e;
     --text-muted: #5a5a5e;
-    --accent: #d7263d;
-    --accent-dim: rgba(215, 38, 61, 0.12);
-    --accent-glow: rgba(215, 38, 61, 0.22);
+    --accent: #CC0033;
+    --accent-dim: rgba(204, 0, 51, 0.08);
+    --accent-glow: rgba(204, 0, 51, 0.15);
     --serif: 'Instrument Serif', Georgia, serif;
     --sans: 'DM Sans', -apple-system, sans-serif;
   }
@@ -36,17 +36,12 @@
     overflow-x: hidden;
   }
 
-  ::selection {
-    background: var(--accent);
-    color: var(--bg);
-  }
+  ::selection { background: var(--accent); color: var(--bg); }
 
   /* --- NAV --- */
   nav {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     z-index: 100;
     padding: 1.25rem 2rem;
     display: flex;
@@ -69,7 +64,7 @@
     letter-spacing: -0.02em;
   }
 
-  .nav-links { display: flex; gap: 2rem; }
+  .nav-links { display: flex; gap: 2rem; align-items: center; }
 
   .nav-links a {
     color: var(--text-secondary);
@@ -81,6 +76,20 @@
   }
 
   .nav-links a:hover { color: var(--text-primary); }
+
+  .nav-links .nav-resume-btn {
+    color: var(--accent);
+    border: 1px solid rgba(204, 0, 51, 0.3);
+    padding: 0.3rem 0.85rem;
+    border-radius: 5px;
+    transition: background 0.25s, border-color 0.25s, color 0.25s;
+  }
+
+  .nav-links .nav-resume-btn:hover {
+    color: var(--text-primary);
+    background: var(--accent-dim);
+    border-color: var(--accent);
+  }
 
   .hamburger {
     display: none;
@@ -111,6 +120,14 @@
     position: relative;
   }
 
+  .hero-inner {
+    display: grid;
+    grid-template-columns: 1fr 260px;
+    gap: 4rem;
+    align-items: center;
+    width: 100%;
+  }
+
   .hero-eyebrow {
     font-size: 0.8rem;
     letter-spacing: 0.15em;
@@ -133,16 +150,13 @@
     animation: fadeUp 0.8s ease forwards 0.4s;
   }
 
-  .hero h1 em {
-    font-style: italic;
-    color: var(--accent);
-  }
+  .hero h1 em { font-style: italic; color: var(--accent); }
 
   .hero-sub {
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     color: var(--text-secondary);
-    max-width: 540px;
-    line-height: 1.7;
+    max-width: 520px;
+    line-height: 1.75;
     font-weight: 300;
     opacity: 0;
     animation: fadeUp 0.8s ease forwards 0.6s;
@@ -152,10 +166,54 @@
     display: flex;
     gap: 1rem;
     margin-top: 2.5rem;
+    flex-wrap: wrap;
     opacity: 0;
     animation: fadeUp 0.8s ease forwards 0.8s;
   }
 
+  /* --- HERO PHOTO --- */
+  .hero-photo {
+    width: 260px;
+    aspect-ratio: 3/4;
+    border-radius: 14px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.5s;
+    flex-shrink: 0;
+  }
+
+  .hero-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+  }
+
+  .hero-photo-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--text-muted);
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .hero-photo-placeholder svg { opacity: 0.18; }
+
+  .hero-photo-placeholder span {
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    opacity: 0.45;
+  }
+
+  /* --- BUTTONS --- */
   .btn {
     display: inline-flex;
     align-items: center;
@@ -177,7 +235,7 @@
   }
 
   .btn-primary:hover {
-    background: #ef4b5f;
+    background: #e8003d;
     box-shadow: 0 0 30px var(--accent-glow);
   }
 
@@ -275,10 +333,7 @@
     transition: border-color 0.3s, transform 0.3s;
   }
 
-  .stat-card:hover {
-    border-color: var(--border-hover);
-    transform: translateY(-2px);
-  }
+  .stat-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
 
   .stat-number {
     font-family: var(--serif);
@@ -288,11 +343,7 @@
     margin-bottom: 0.4rem;
   }
 
-  .stat-label {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    letter-spacing: 0.04em;
-  }
+  .stat-label { font-size: 0.8rem; color: var(--text-muted); letter-spacing: 0.04em; }
 
   /* --- PROJECTS --- */
   .projects-grid {
@@ -320,7 +371,7 @@
   }
 
   .project-preview {
-    height: 200px;
+    height: 210px;
     background: var(--bg-elevated);
     display: flex;
     align-items: center;
@@ -334,6 +385,26 @@
     position: absolute;
     inset: 0;
     background: linear-gradient(135deg, var(--accent-dim), transparent 60%);
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .project-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+
+  .project-card:hover .project-preview img { transform: scale(1.04); }
+
+  /* Engineering drawing on dark background */
+  .project-preview img.drawing {
+    filter: invert(0.87) sepia(0.08);
+    object-fit: contain;
+    padding: 1.25rem;
   }
 
   .project-icon {
@@ -373,10 +444,41 @@
 
   .project-card p {
     color: var(--text-secondary);
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     line-height: 1.65;
     font-weight: 300;
     flex: 1;
+  }
+
+  /* Project tech specs list */
+  .project-specs {
+    list-style: none;
+    margin-top: 1rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .project-specs li {
+    display: flex;
+    gap: 0.65rem;
+    font-size: 0.77rem;
+    color: var(--text-secondary);
+    font-weight: 300;
+    line-height: 1.45;
+  }
+
+  .spec-label {
+    color: var(--text-muted);
+    font-size: 0.67rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    width: 66px;
+    flex-shrink: 0;
+    padding-top: 0.13rem;
   }
 
   .project-link-text {
@@ -393,7 +495,7 @@
   .project-card:hover .project-link-text { gap: 0.7rem; }
 
   /* --- EXPERIENCE --- */
-  .timeline { display: flex; flex-direction: column; gap: 0rem; }
+  .timeline { display: flex; flex-direction: column; }
 
   .timeline-item {
     display: grid;
@@ -401,7 +503,6 @@
     gap: 3rem;
     padding: 2rem 0;
     border-bottom: 1px solid var(--border);
-    transition: background 0.3s;
   }
 
   .timeline-item:first-child { border-top: 1px solid var(--border); }
@@ -413,11 +514,7 @@
     padding-top: 0.2rem;
   }
 
-  .timeline-content h3 {
-    font-size: 1.1rem;
-    font-weight: 500;
-    margin-bottom: 0.25rem;
-  }
+  .timeline-content h3 { font-size: 1.1rem; font-weight: 500; margin-bottom: 0.25rem; }
 
   .timeline-org {
     color: var(--accent);
@@ -432,6 +529,8 @@
     line-height: 1.7;
     font-weight: 300;
   }
+
+  .timeline-content p + p { margin-top: 0.6rem; }
 
   /* --- SKILLS --- */
   .skills-grid {
@@ -459,11 +558,7 @@
     font-weight: 500;
   }
 
-  .skill-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 
   .skill-tag {
     font-size: 0.82rem;
@@ -476,10 +571,7 @@
     transition: color 0.2s, border-color 0.2s;
   }
 
-  .skill-tag:hover {
-    color: var(--text-primary);
-    border-color: var(--border-hover);
-  }
+  .skill-tag:hover { color: var(--text-primary); border-color: var(--border-hover); }
 
   /* --- LEADERSHIP --- */
   .leadership-card {
@@ -501,19 +593,15 @@
     height: 64px;
     border-radius: 50%;
     background: var(--accent-dim);
-    border: 1px solid rgba(215, 38, 61, 0.32);
+    border: 1px solid rgba(204, 0, 51, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
+    flex-shrink: 0;
   }
 
-  .leadership-card h3 {
-    font-size: 1.15rem;
-    font-weight: 500;
-    margin-bottom: 0.25rem;
-  }
-
+  .leadership-card h3 { font-size: 1.15rem; font-weight: 500; margin-bottom: 0.25rem; }
   .leadership-card .timeline-org { margin-bottom: 0.5rem; }
 
   .leadership-card p {
@@ -524,11 +612,7 @@
   }
 
   /* --- CONTACT --- */
-  #contact {
-    text-align: center;
-    padding-bottom: 8rem;
-  }
-
+  #contact { text-align: center; padding-bottom: 8rem; }
   #contact .section-title { margin-bottom: 1rem; }
 
   .contact-sub {
@@ -536,6 +620,10 @@
     font-size: 1.05rem;
     font-weight: 300;
     margin-bottom: 2.5rem;
+    max-width: 480px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.75;
   }
 
   .contact-links {
@@ -567,10 +655,19 @@
     box-shadow: 0 8px 25px rgba(0,0,0,0.2);
   }
 
-  .contact-link svg {
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
+  .contact-link svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+  /* Resume download CTA in contact */
+  .contact-resume {
+    margin-top: 2.5rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .contact-resume p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
   }
 
   /* --- FOOTER --- */
@@ -585,12 +682,12 @@
   /* --- ANIMATIONS --- */
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    to   { opacity: 1; transform: translateY(0); }
   }
 
   @keyframes scrollPulse {
     0%, 100% { opacity: 0.3; }
-    50% { opacity: 1; }
+    50%       { opacity: 1; }
   }
 
   .reveal {
@@ -599,20 +696,16 @@
     transition: opacity 0.7s ease, transform 0.7s ease;
   }
 
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
 
   /* --- RESPONSIVE --- */
   @media (max-width: 900px) {
-    .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .hero-inner   { grid-template-columns: 1fr; }
+    .hero-photo   { display: none; }
+    .about-grid   { grid-template-columns: 1fr; gap: 2.5rem; }
     .projects-grid { grid-template-columns: 1fr; }
-    .skills-grid { grid-template-columns: 1fr 1fr; }
-    .timeline-item {
-      grid-template-columns: 1fr;
-      gap: 0.5rem;
-    }
+    .skills-grid  { grid-template-columns: 1fr 1fr; }
+    .timeline-item { grid-template-columns: 1fr; gap: 0.5rem; }
   }
 
   @media (max-width: 640px) {
@@ -622,9 +715,7 @@
       display: flex;
       flex-direction: column;
       position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
+      top: 100%; left: 0; right: 0;
       background: rgba(10,10,11,0.95);
       backdrop-filter: blur(20px);
       padding: 1.5rem 2rem;
@@ -637,10 +728,7 @@
     .skills-grid { grid-template-columns: 1fr; }
     .hero-links { flex-direction: column; }
     .btn { justify-content: center; }
-    .leadership-card {
-      grid-template-columns: 1fr;
-      text-align: center;
-    }
+    .leadership-card { grid-template-columns: 1fr; text-align: center; }
     .leadership-badge { margin: 0 auto; }
     .about-stats { grid-template-columns: 1fr 1fr; }
   }
@@ -657,6 +745,7 @@
     <a href="#experience">Experience</a>
     <a href="#skills">Skills</a>
     <a href="#contact">Contact</a>
+    <a href="Luke Horton Resume.pdf" target="_blank" class="nav-resume-btn">Resume ↗</a>
   </div>
   <button class="hamburger" id="hamburger" aria-label="Menu">
     <span></span><span></span><span></span>
@@ -665,13 +754,31 @@
 
 <!-- HERO -->
 <section class="hero">
-  <p class="hero-eyebrow">Aerospace Engineer · Developer · Builder</p>
-  <h1>Luke R.<br>Horton</h1>
-  <p class="hero-sub">Aerospace engineering student at San Diego State University with a passion for design, analysis, and building things that fly — from carrier-based strike fighters to ground-effect vehicles.</p>
-  <div class="hero-links">
-    <a href="#projects" class="btn btn-primary">View Projects →</a>
-    <a href="#contact" class="btn btn-outline">Get in Touch</a>
+  <div class="hero-inner">
+    <div>
+      <p class="hero-eyebrow">Aerospace Engineer · Systems Thinker · Builder</p>
+      <h1>Luke R.<br><em>Horton</em></h1>
+      <p class="hero-sub">Aerospace engineering senior at SDSU, graduating May 2026. I work at the intersection of performance analysis, vehicle design, and hands-on prototype development — currently leading a carrier-based strike fighter concept and building a ground-effect vehicle from scratch.</p>
+      <div class="hero-links">
+        <a href="Luke Horton Resume.pdf" target="_blank" class="btn btn-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+          Download Resume
+        </a>
+        <a href="#projects" class="btn btn-outline">View Projects</a>
+      </div>
+    </div>
+
+    <!--
+      PHOTO: To add your headshot, replace the .hero-photo-placeholder div below with:
+        <img src="photos/luke-horton.jpg" alt="Luke Horton">
+      Recommended: professional photo, portrait orientation, min 500×650px, JPG.
+      Drop the file anywhere in this folder and update the src path accordingly.
+    -->
+    <div class="hero-photo">
+      <img src="photos/Heasdshot.png" alt="Luke Horton">
+    </div>
   </div>
+
   <div class="hero-scroll-hint">
     <div class="scroll-line"></div>
   </div>
@@ -687,13 +794,13 @@
   </div>
   <div class="about-grid reveal">
     <div class="about-text">
-      <p>I'm an aerospace engineering senior at SDSU graduating May 2026. My work spans performance analysis for next-generation fighter concepts, hands-on prototype development of ground-effect vehicles, and structural engineering for sounding rockets.</p>
-      <p>Beyond the classroom, I bring real-world experience as a sales engineering intern, leadership as a fraternity chapter president managing a $200K+ budget and 170+ members, and a deep love for fabrication — from welding 800-pound steel stages to building modular structures from scratch.</p>
-      <p>I'm driven by problems that sit at the intersection of analysis and physical design, where CAD models meet test data and theory meets the shop floor.</p>
+      <p>I'm an aerospace engineering senior at SDSU, graduating May 2026. My work spans flight performance analysis for a conceptual carrier-based strike aircraft, hands-on prototype development of a ground-effect vehicle, and structural engineering for sounding rockets.</p>
+      <p>Beyond the classroom, I bring practical experience as a sales engineering intern, and leadership running a 170+ member organization with a $200K+ annual budget — driving measurable gains in performance and earning institutional recognition.</p>
+      <p>I'm most at home on problems that live at the intersection of analysis and physical design — where MATLAB models meet test data and engineering drawings meet the shop floor.</p>
     </div>
     <div class="about-stats">
       <div class="stat-card">
-        <div class="stat-number">2026</div>
+        <div class="stat-number">May '26</div>
         <div class="stat-label">B.S. Aerospace Eng.</div>
       </div>
       <div class="stat-card">
@@ -721,28 +828,57 @@
     <h2 class="section-title">Featured work.</h2>
   </div>
   <div class="projects-grid reveal">
-    <a href="https://lukerhort.github.io/wig-project/" target="_blank" rel="noopener" class="project-card">
-      <div class="project-preview">
-        <div class="project-icon">✈️</div>
-      </div>
-      <div class="project-body">
-        <span class="project-tag">Senior Design</span>
-        <h3>Wing in Ground Effect Vehicle</h3>
-        <p>Designed, built, and tested a GEV prototype through rapid design–build–test–iterate cycles. Integrated sensors for data capture, executed controlled near-surface tests, and refined the design based on results.</p>
-        <span class="project-link-text">View Project →</span>
-      </div>
-    </a>
+
+    <!-- AE 460A — Aleborne Strike Fighter -->
     <a href="https://lukerhort.github.io/aleborne/" target="_blank" rel="noopener" class="project-card">
       <div class="project-preview">
-        <div class="project-icon">🍺</div>
+        <!--
+          Image: AE 460A/ENGINE_CONFIG_DRAWING.png
+          3-view engineering drawing of the Aleborne strike fighter concept.
+          Using CSS invert filter for dark-theme compatibility.
+        -->
+        <img src="photos/AE460Thumbnail.png"
+             alt="Aleborne carrier-based strike fighter — 3-view engineering drawing"
+             class="drawing">
       </div>
       <div class="project-body">
-        <span class="project-tag">Personal Project</span>
-        <h3>Aleborne</h3>
-        <p>A web-based project showcasing development skills outside the engineering domain — demonstrating versatility in design, frontend development, and creative problem solving.</p>
-        <span class="project-link-text">View Project →</span>
+        <span class="project-tag">AE 460A · Senior Capstone</span>
+        <h3>Aleborne — Carrier Strike Fighter</h3>
+        <p>Conceptual design of a next-generation Navy carrier-based strike aircraft. Led performance analysis, physics-based sizing models, and flight envelope development from mission requirements through PDR.</p>
+        <ul class="project-specs">
+          <li><span class="spec-label">Role</span>Performance Lead &amp; Systems Engineer</li>
+          <li><span class="spec-label">Analysis</span>Drag polar · T/W–W/S trades · V-n envelope (MIL-A-8861B) · OEI · T/O &amp; landing</li>
+          <li><span class="spec-label">Envelope</span>V<sub>C</sub> = 903 ft/s · V<sub>D</sub> = 1,129 ft/s · n<sub>lim</sub> = 7.5g / −3.0g</li>
+          <li><span class="spec-label">Tools</span>MATLAB · SolidWorks · Excel sizing models</li>
+        </ul>
+        <span class="project-link-text">View Project Site →</span>
       </div>
     </a>
+
+    <!-- AE 403W — Wing in Ground Effect Vehicle -->
+    <a href="https://lukerhort.github.io/wig-project/" target="_blank" rel="noopener" class="project-card">
+      <div class="project-preview">
+        <!--
+          Image: AE 403W/Media/WingWithSpar.JPG
+          Build photo showing wing panel assembly with carbon fiber spar.
+        -->
+        <img src="photos/AE403WThumbnail.png"
+             alt="WIG vehicle wing assembly with carbon fiber spar">
+      </div>
+      <div class="project-body">
+        <span class="project-tag">AE 403W · Senior Design</span>
+        <h3>Wing in Ground Effect Vehicle</h3>
+        <p>RC-scale WIG prototype designed, built, and tested from scratch. Led the full project cycle — airfoil selection, XFLR5 aerodynamic analysis comparing in-ground-effect vs. out-of-ground-effect conditions, and assembly of a 3D-printed/carbon-fiber structure with Pixhawk flight control.</p>
+        <ul class="project-specs">
+          <li><span class="spec-label">Role</span>Project Manager</li>
+          <li><span class="spec-label">Wing</span>FX 63-137 · AR = 5.4 · 5.4 ft span · 15° anhedral winglets</li>
+          <li><span class="spec-label">Avionics</span>Pixhawk 6C · PX4 · LiDAR altimeter · 4× distributed motors</li>
+          <li><span class="spec-label">Tools</span>SolidWorks · XFLR5 · Pixhawk PX4</li>
+        </ul>
+        <span class="project-link-text">View Project Site →</span>
+      </div>
+    </a>
+
   </div>
 </section>
 
@@ -755,46 +891,53 @@
     <h2 class="section-title">Where I've contributed.</h2>
   </div>
   <div class="timeline reveal">
+
     <div class="timeline-item">
       <div class="timeline-date">Fall 2025 — Spring 2026</div>
       <div class="timeline-content">
-        <h3>Performance Lead & Systems Engineer</h3>
-        <div class="timeline-org">Next-Gen Carrier Based Strike Fighter · SDSU Senior Capstone</div>
-        <p>Led performance and test-planning analysis for a conceptual Navy strike fighter. Built physics-based sizing and performance models, ran parametric sweeps, and drove configuration trade decisions through structured analysis.</p>
+        <h3>Performance Lead &amp; Systems Engineer</h3>
+        <div class="timeline-org">Next-Gen Carrier-Based Strike Fighter (Aleborne) · SDSU Senior Capstone</div>
+        <p>Led flight performance analysis for a conceptual Navy carrier-based strike aircraft. Translated mission and carrier requirements into verification-style metrics, owned weight estimation, wing sizing, and T/O and landing analyses, and coordinated with subsystem leads to deliver PDR technical memos.</p>
+        <p>Built and validated physics-based sizing models — drag polar, T/W–W/S constraint sets, parametric sweeps — to quantify carrier-suitability margins and drive configuration trade decisions.</p>
       </div>
     </div>
+
     <div class="timeline-item">
       <div class="timeline-date">Spring 2026</div>
       <div class="timeline-content">
         <h3>Project Manager</h3>
         <div class="timeline-org">Wing in Ground Effect Vehicle · SDSU Senior Design</div>
-        <p>Led requirements, schedule, and anomaly troubleshooting for a GEV prototype. Converted performance goals into airfoil/planform/CG trades, diagnosed test issues, and validated improvements through re-test and documentation.</p>
+        <p>Managed requirements, schedule, and anomaly troubleshooting for a GEV prototype built through a rapid design–build–test–iterate cycle. Converted performance goals into airfoil/planform/CG trades, integrated sensors for data capture, executed controlled near-surface tests, reduced data, and validated improvements through re-test and documentation.</p>
       </div>
     </div>
+
     <div class="timeline-item">
       <div class="timeline-date">Sept 2025 — Present</div>
       <div class="timeline-content">
         <h3>Inside Sales Engineer Intern</h3>
         <div class="timeline-org">DMG Corporation · San Diego, CA</div>
-        <p>Providing operational support to outside sales engineers — generating quotes, securing vendor pricing, processing orders and POs, coordinating with manufacturers, and managing customer communications.</p>
+        <p>Provide operational support to outside sales engineers — generating quotes, securing vendor pricing, processing sales orders and POs, coordinating with manufacturers, and managing customer status communications.</p>
       </div>
     </div>
+
     <div class="timeline-item">
       <div class="timeline-date">Fall 2023 — Fall 2024</div>
       <div class="timeline-content">
         <h3>External Structures Engineer</h3>
         <div class="timeline-org">SDSU Rocket Project</div>
-        <p>Performed structural analysis and iterative testing on rocket launch lugs. Refined SolidWorks CAD and drawings for manufacturability while collaborating in cross-team design reviews.</p>
+        <p>Performed structural analysis and iterative testing on rocket launch lugs, refining SolidWorks CAD and drawings for manufacturability and subsystem integration. Collaborated in cross-team design reviews to meet structural and schedule constraints.</p>
       </div>
     </div>
+
     <div class="timeline-item">
       <div class="timeline-date">Fall 2025 — Present</div>
       <div class="timeline-content">
         <h3>President</h3>
         <div class="timeline-org">San Diego Sales Engineers (National Society of Sales Engineers) · SDSU</div>
-        <p>Planned and organized networking sessions and technical workshops. Participated in panels and a conference competition to strengthen skills and industry connections.</p>
+        <p>Lead chapter operations, planning networking sessions and technical workshops on sales engineering. Represented SDSU at the National Sales Engineering Conference (NSEC) in 2024 and 2025.</p>
       </div>
     </div>
+
   </div>
 </section>
 
@@ -808,25 +951,26 @@
   </div>
   <div class="skills-grid reveal">
     <div class="skill-group">
-      <h3>CAD & Design</h3>
+      <h3>CAD &amp; Design</h3>
       <div class="skill-tags">
         <span class="skill-tag">SolidWorks</span>
-        <span class="skill-tag">GD&T</span>
+        <span class="skill-tag">GD&amp;T</span>
         <span class="skill-tag">DFM</span>
         <span class="skill-tag">Rapid Prototyping</span>
       </div>
     </div>
     <div class="skill-group">
-      <h3>Simulation & Analysis</h3>
+      <h3>Simulation &amp; Analysis</h3>
       <div class="skill-tags">
         <span class="skill-tag">ANSYS</span>
         <span class="skill-tag">NX Nastran (FEA)</span>
         <span class="skill-tag">MATLAB</span>
         <span class="skill-tag">Simulink</span>
+        <span class="skill-tag">XFLR5</span>
       </div>
     </div>
     <div class="skill-group">
-      <h3>Programming</h3>
+      <h3>Programming &amp; Automation</h3>
       <div class="skill-tags">
         <span class="skill-tag">Python</span>
         <span class="skill-tag">VBA</span>
@@ -835,7 +979,7 @@
       </div>
     </div>
     <div class="skill-group">
-      <h3>Documentation</h3>
+      <h3>Documentation &amp; Tools</h3>
       <div class="skill-tags">
         <span class="skill-tag">LaTeX</span>
         <span class="skill-tag">Bluebeam Revu</span>
@@ -853,13 +997,14 @@
       </div>
     </div>
     <div class="skill-group">
-      <h3>Coursework Highlights</h3>
+      <h3>Coursework</h3>
       <div class="skill-tags">
-        <span class="skill-tag">Flight Controls</span>
-        <span class="skill-tag">Propulsion</span>
+        <span class="skill-tag">Feedback Flight Control</span>
+        <span class="skill-tag">Aircraft Propulsion</span>
         <span class="skill-tag">Aerodynamics</span>
         <span class="skill-tag">Structural Dynamics</span>
         <span class="skill-tag">Astrodynamics</span>
+        <span class="skill-tag">Spacecraft Attitude Dynamics</span>
       </div>
     </div>
   </div>
@@ -879,7 +1024,7 @@
       <div>
         <h3>Chapter President — Kappa Alpha Order</h3>
         <div class="timeline-org">2024 · Earned IFC Most Improved Chapter</div>
-        <p>Directed a 170+ member chapter with an executive board and 20+ chairs, managing a $200K+ annual budget. Drove measurable gains in membership, engagement, and overall performance, earning institutional recognition.</p>
+        <p>Led a 170+ member chapter with an executive board and 20+ chairs, managing a $200K+ annual budget. Drove measurable gains in membership, engagement, and overall performance — earning institutional recognition as IFC Most Improved Chapter.</p>
       </div>
     </div>
   </div>
@@ -887,9 +1032,9 @@
     <div class="leadership-card">
       <div class="leadership-badge">🔧</div>
       <div>
-        <h3>Fabrication & Personal Projects</h3>
+        <h3>Fabrication &amp; Personal Projects</h3>
         <div class="timeline-org">Welding · Modular Stage Design</div>
-        <p>Co-led fabrication of a custom 800-lb steel stage for charity events using advanced welding techniques. Separately designed and built a 700 ft² modular stage system emphasizing repeatable assembly and interchangeable modules.</p>
+        <p>Co-led the design and fabrication of a custom 800-lb steel stage for charity events using advanced welding and SolidWorks. Separately designed and built a 700 ft² modular stage system emphasizing repeatable assembly and interchangeable modules.</p>
       </div>
     </div>
   </div>
@@ -902,7 +1047,7 @@
   <div class="reveal">
     <p class="section-label">06 — Contact</p>
     <h2 class="section-title">Let's connect.</h2>
-    <p class="contact-sub">Open to opportunities in aerospace, defense, and engineering roles.</p>
+    <p class="contact-sub">Open to full-time aerospace and defense engineering roles. Graduating May 2026 — available for opportunities starting summer or fall.</p>
     <div class="contact-links">
       <a href="mailto:lukerhorton4@gmail.com" class="contact-link">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 4L12 13 2 4"/></svg>
@@ -915,6 +1060,13 @@
       <a href="https://github.com/lukerhort" target="_blank" rel="noopener" class="contact-link">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 002 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0012 2z"/></svg>
         GitHub
+      </a>
+    </div>
+    <div class="contact-resume">
+      <p>Prefer to review a PDF?</p>
+      <a href="Luke Horton Resume.pdf" target="_blank" class="btn btn-outline">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+        Download Resume
       </a>
     </div>
   </div>
@@ -933,7 +1085,7 @@
 
   // Hamburger menu
   const hamburger = document.getElementById('hamburger');
-  const navLinks = document.getElementById('navLinks');
+  const navLinks  = document.getElementById('navLinks');
   hamburger.addEventListener('click', () => {
     navLinks.classList.toggle('open');
   });
@@ -944,9 +1096,7 @@
   // Scroll reveal
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
+      if (entry.isIntersecting) entry.target.classList.add('visible');
     });
   }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
@@ -955,4 +1105,3 @@
 
 </body>
 </html>
-
