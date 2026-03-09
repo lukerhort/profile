@@ -700,11 +700,11 @@
 
   /* --- RESPONSIVE --- */
   @media (max-width: 900px) {
-    .hero-inner   { grid-template-columns: 1fr; }
-    .hero-photo   { display: none; }
-    .about-grid   { grid-template-columns: 1fr; gap: 2.5rem; }
+    .hero-inner    { grid-template-columns: 1fr; }
+    .hero-photo    { order: -1; width: 150px; aspect-ratio: 1/1; border-radius: 50%; justify-self: center; }
+    .about-grid    { grid-template-columns: 1fr; gap: 2.5rem; }
     .projects-grid { grid-template-columns: 1fr; }
-    .skills-grid  { grid-template-columns: 1fr 1fr; }
+    .skills-grid   { grid-template-columns: 1fr 1fr; }
     .timeline-item { grid-template-columns: 1fr; gap: 0.5rem; }
   }
 
