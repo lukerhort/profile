@@ -4,6 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Luke R. Horton — Aerospace Engineer</title>
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+<!-- Open Graph / Social Preview -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Luke R. Horton — Aerospace Engineer">
+<meta property="og:description" content="Aerospace engineering senior at SDSU. Incoming Program Manager Intern at True Anomaly. Portfolio of flight performance analysis, vehicle design, and prototype development.">
+<meta property="og:url" content="https://lukerhort.github.io">
+<meta property="og:image" content="https://lukerhort.github.io/Photos/Headshot.JPG">
+<meta property="og:site_name" content="Luke R. Horton">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Luke R. Horton — Aerospace Engineer">
+<meta name="twitter:description" content="Aerospace engineering senior at SDSU. Incoming Program Manager Intern at True Anomaly. Portfolio of flight performance analysis, vehicle design, and prototype development.">
+<meta name="twitter:image" content="https://lukerhort.github.io/Photos/Headshot.JPG">
+
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-7JRD0V232N"></script>
 <script>
@@ -114,6 +132,61 @@
     height: 1.5px;
     background: var(--text-secondary);
     transition: all 0.3s;
+  }
+
+  /* --- STATUS BANNER --- */
+  .status-banner {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.1s;
+  }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.78rem;
+    font-weight: 400;
+    border-radius: 100px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    letter-spacing: 0.01em;
+    transition: border-color 0.3s;
+  }
+
+  .status-pill:hover { border-color: var(--border-hover); }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .status-dot.green {
+    background: #22c55e;
+    box-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+
+  .status-dot.blue {
+    background: #3b82f6;
+    box-shadow: 0 0 6px rgba(59, 130, 246, 0.4);
+  }
+
+  .status-dot.red {
+    background: var(--accent);
+    box-shadow: 0 0 6px var(--accent-glow);
+  }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
   }
 
   /* --- HERO --- */
@@ -266,16 +339,34 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0rem;
     opacity: 0;
     animation: fadeUp 0.8s ease forwards 1s;
+    cursor: pointer;
   }
 
-  .scroll-line {
-    width: 1px;
-    height: 40px;
-    background: linear-gradient(to bottom, var(--accent), transparent);
-    animation: scrollPulse 2s ease-in-out infinite;
+  .hero-scroll-hint span {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .scroll-chevron {
+    width: 20px;
+    height: 20px;
+    color: var(--text-muted);
+    animation: bobDown 2s ease-in-out infinite;
+    transition: color 0.25s;
+  }
+
+  .hero-scroll-hint:hover .scroll-chevron { color: var(--accent); }
+  .hero-scroll-hint:hover span { color: var(--text-secondary); }
+
+  @keyframes bobDown {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(6px); }
   }
 
   /* --- SECTIONS --- */
@@ -764,6 +855,11 @@
 <section class="hero">
   <div class="hero-inner">
     <div>
+      <div class="status-banner">
+        <span class="status-pill"><span class="status-dot green"></span> SDSU Senior — Graduating May 2026</span>
+        <span class="status-pill"><span class="status-dot blue"></span> 2 Active Projects</span>
+        <span class="status-pill"><span class="status-dot red"></span> Incoming @ True Anomaly — Summer 2026</span>
+      </div>
       <p class="hero-eyebrow">Aerospace Engineer · Systems Thinker · Builder</p>
       <h1>Luke R.<br><em>Horton</em></h1>
       <p class="hero-sub">Aerospace engineering senior at SDSU, graduating May 2026. Incoming Program Manager Intern at True Anomaly this summer. I work at the intersection of performance analysis, vehicle design, and hands-on prototype development — from carrier-based strike fighter concepts to ground-effect vehicles built from scratch.</p>
@@ -787,9 +883,10 @@
     </div>
   </div>
 
-  <div class="hero-scroll-hint">
-    <div class="scroll-line"></div>
-  </div>
+  <a href="#about" class="hero-scroll-hint">
+    <span>Scroll</span>
+    <svg class="scroll-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  </a>
 </section>
 
 <div class="divider"></div>
