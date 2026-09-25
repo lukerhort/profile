@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { site } from "@/lib/content";
-import OrbitDiagram from "./OrbitDiagram";
+import { OrbitalTraffic, TrackReticle } from "./TrackingLayer";
 
 export type HeroMedia = {
   video?: string[]; // e.g. ["/media/hero.webm", "/media/hero.mp4"]
@@ -27,8 +27,8 @@ export default function Hero({ media, backdrop }: { media: HeroMedia; backdrop: 
 
         gsap.fromTo(
           "[data-hero-orbit]",
-          { autoAlpha: 0, scale: 0.94 },
-          { autoAlpha: 1, scale: 1, duration: 2.2, ease: "expo.out", delay: 0.4 },
+          { autoAlpha: 0 },
+          { autoAlpha: 1, duration: 2.2, ease: "power2.out", delay: 0.4 },
         );
 
         // Scroll-out: headline lifts and fades, background slowly pushes in.
@@ -38,7 +38,7 @@ export default function Hero({ media, backdrop }: { media: HeroMedia; backdrop: 
         tl.to("[data-hero-copy]", { yPercent: -35, autoAlpha: 0, ease: "none" }, 0)
           .to("[data-hero-bg]", { scale: 1.15, ease: "none" }, 0)
           .to("[data-hero-shade]", { opacity: 1, ease: "none" }, 0)
-          .to("[data-hero-orbit]", { yPercent: -18, rotate: -6, ease: "none" }, 0);
+          .to("[data-hero-orbit]", { yPercent: -12, ease: "none" }, 0);
       });
     },
     { scope: root },
@@ -79,12 +79,10 @@ export default function Hero({ media, backdrop }: { media: HeroMedia; backdrop: 
       {/* Legibility gradients */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/60 via-transparent to-ink" />
 
-      {/* Orbit diagram overlay (sits above any hero media) */}
-      <div
-        data-hero-orbit
-        className="pointer-events-none absolute right-[-18%] top-[11%] w-[118vw] md:right-[-1%] md:top-[11%] md:w-[min(50vw,780px)]"
-      >
-        <OrbitDiagram className="h-auto w-full opacity-60 md:opacity-100" />
+      {/* Orbital traffic + tracked object (sit above any hero media) */}
+      <div data-hero-orbit className="pointer-events-none absolute inset-0">
+        <OrbitalTraffic />
+        <TrackReticle className="absolute left-[30%] top-[16%] w-[240px] md:left-auto md:right-[9%] md:top-[20%] md:w-[min(30vw,420px)]" />
       </div>
 
       <div data-hero-shade className="pointer-events-none absolute inset-0 bg-ink opacity-0" />

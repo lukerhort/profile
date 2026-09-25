@@ -2,6 +2,7 @@ import Image from "next/image";
 import { about } from "@/lib/content";
 import SectionHeading from "./SectionHeading";
 import OrbitRings from "./OrbitRings";
+import Brackets from "./Brackets";
 
 export default function About() {
   return (
@@ -34,18 +35,24 @@ export default function About() {
           >
             <OrbitRings className="h-auto w-full" />
           </div>
-          <div className="relative aspect-square overflow-hidden bg-ink-2">
-            <div data-parallax="0.12" className="absolute -inset-y-[8%] inset-x-0">
-              <Image
-                src="/images/headshot.webp"
-                alt="Portrait of Luke Horton"
-                fill
-                sizes="(min-width: 1024px) 30vw, 100vw"
-                className="object-cover object-top"
-              />
+          <div className="relative">
+            <Brackets />
+            <div className="relative aspect-square overflow-hidden bg-ink-2">
+              <div data-parallax="0.12" className="absolute -inset-y-[8%] inset-x-0">
+                <Image
+                  src="/images/headshot.webp"
+                  alt="Portrait of Luke Horton"
+                  fill
+                  sizes="(min-width: 1024px) 30vw, 100vw"
+                  className="object-cover object-top"
+                />
+              </div>
             </div>
           </div>
-          <p className="eyebrow relative mt-4">Long Beach, CA</p>
+          <p className="eyebrow relative mt-5 flex items-center gap-3">
+            <span className="h-1.5 w-1.5 animate-[blink_1.6s_steps(2)_infinite] bg-accent" aria-hidden="true" />
+            Long Beach, CA
+          </p>
         </div>
       </div>
     </section>

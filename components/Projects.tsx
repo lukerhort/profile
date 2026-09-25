@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { projects } from "@/lib/content";
 import SectionHeading from "./SectionHeading";
+import Brackets from "./Brackets";
 
 export default function Projects() {
   return (
@@ -33,7 +34,8 @@ export default function Projects() {
                   }`}
                 />
               </div>
-              <span className="eyebrow absolute left-4 top-4 flex items-center gap-2 bg-ink/70 px-3 py-1.5 text-fg/80 backdrop-blur">
+              <Brackets inset="12px" className="z-10 opacity-60 transition-opacity duration-500 group-hover:opacity-100" />
+              <span className="eyebrow absolute left-7 top-7 flex items-center gap-2 bg-ink/70 px-3 py-1.5 text-fg/80 backdrop-blur">
                 <span
                   className={`h-1.5 w-1.5 rounded-full ${p.status === "Complete" ? "bg-emerald-400" : "bg-amber-400"}`}
                   aria-hidden="true"

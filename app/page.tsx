@@ -10,7 +10,7 @@ import Projects from "@/components/Projects";
 import Education from "@/components/Education";
 import Leadership from "@/components/Leadership";
 import Contact from "@/components/Contact";
-import OrbitHud from "@/components/OrbitHud";
+import SectionHud from "@/components/SectionHud";
 
 /**
  * Hero media is picked up automatically at build time from public/media:
@@ -38,7 +38,7 @@ export default function Home() {
         Skip to content
       </a>
       <Nav />
-      <OrbitHud />
+      <SectionHud />
       <main>
         <Hero media={findHeroMedia()} backdrop={<HeroBackdrop />} />
         <About />

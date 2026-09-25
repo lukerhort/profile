@@ -135,3 +135,36 @@
     transform: translateY(200%);
   }
 }
+
+/* Tracking reticle */
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(-10px, 6px);
+  }
+}
+@keyframes lock {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.9);
+  }
+}
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes circle {
+  to {
+    transform: rotate(360deg);
+  }
+}
