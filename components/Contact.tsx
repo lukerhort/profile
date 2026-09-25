@@ -1,4 +1,5 @@
 import { site } from "@/lib/content";
+import OrbitRings from "./OrbitRings";
 
 export default function Contact() {
   const links = [
@@ -10,7 +11,13 @@ export default function Contact() {
 
   return (
     <section id="contact" className="relative overflow-hidden border-t border-line pb-16 pt-28 md:pt-44">
-      <div className="container-x" data-reveal-group>
+      <div
+        data-orbit-spin="40"
+        className="pointer-events-none absolute right-[-35%] top-10 w-[150%] md:right-[-12%] md:top-16 md:w-[70%]"
+      >
+        <OrbitRings className="h-auto w-full" />
+      </div>
+      <div className="container-x relative" data-reveal-group>
         <p className="eyebrow flex items-center gap-4" data-reveal>
           <span className="text-accent">06</span>
           <span className="h-px w-10 bg-line" aria-hidden="true" />
@@ -52,7 +59,7 @@ export default function Contact() {
         </ul>
       </div>
 
-      <footer className="container-x mt-24 flex flex-col justify-between gap-3 font-mono text-[0.68rem] uppercase tracking-[0.2em] text-dim sm:flex-row">
+      <footer className="container-x relative mt-24 flex flex-col justify-between gap-3 font-mono text-[0.68rem] uppercase tracking-[0.2em] text-dim sm:flex-row">
         <span>© {new Date().getFullYear()} {site.name}</span>
         <span>
           {site.title} · {site.location}

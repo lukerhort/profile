@@ -15,6 +15,7 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
  *   data-reveal-group   container whose [data-reveal] children stagger in
  *   data-reveal         element that fades/slides up when scrolled into view
  *   data-parallax="n"   element drifts by n * 100% of its height while scrolling
+ *   data-orbit-spin="d" element rotates through d degrees while scrolling past
  *
  * With prefers-reduced-motion, Lenis is skipped and everything renders static.
  */
@@ -79,6 +80,20 @@ export default function Motion({ children }: { children: React.ReactNode }) {
                 end: "bottom top",
                 scrub: true,
               },
+            },
+          );
+        });
+
+        // Orbit rings slowly precess as their section scrolls past.
+        gsap.utils.toArray<HTMLElement>("[data-orbit-spin]").forEach((el) => {
+          const amount = parseFloat(el.dataset.orbitSpin || "24");
+          gsap.fromTo(
+            el,
+            { rotate: -amount / 2 },
+            {
+              rotate: amount / 2,
+              ease: "none",
+              scrollTrigger: { trigger: el.parentElement ?? el, start: "top bottom", end: "bottom top", scrub: true },
             },
           );
         });

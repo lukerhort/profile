@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   trailingSlash: true,
+  // Keep the dev badge clear of the orbit HUD (bottom-left).
+  devIndicators: { position: "bottom-right" },
 };
 
 export default nextConfig;

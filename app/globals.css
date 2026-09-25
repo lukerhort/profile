@@ -99,7 +99,8 @@
    (The `js` class is set by an inline script in <head> before paint.) */
 @media (prefers-reduced-motion: no-preference) {
   .js [data-reveal],
-  .js [data-hero-in] {
+  .js [data-hero-in],
+  .js [data-hero-orbit] {
     opacity: 0;
   }
 }

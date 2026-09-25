@@ -4,7 +4,7 @@ import sharp from "sharp";
 import { mkdirSync } from "node:fs";
 
 const jobs = [
-  { src: "Headshot.JPG", out: "headshot.webp", width: 900 },
+  { src: "Headshot-TrueAnomaly.png", out: "headshot.webp", width: 900 },
   { src: "AlebornePlane.png", out: "aleborne.webp", width: 1400 },
   { src: "DesignDay2.jpg", out: "barrelborne.webp", width: 1400 },
   { src: "DaedalusLogov1.png", out: "daedalus.webp", width: 900 },
