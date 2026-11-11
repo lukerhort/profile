@@ -16,21 +16,10 @@ export default function Hero({ media, backdrop }: { media: HeroMedia; backdrop: 
 
   useGSAP(
     () => {
+      // The intro is a CSS animation (see [data-hero-in] in globals.css) so the
+      // hero never depends on this bundle to become visible.
       const mm = gsap.matchMedia();
       mm.add("(prefers-reduced-motion: no-preference)", () => {
-        // Intro
-        gsap.fromTo(
-          "[data-hero-in]",
-          { autoAlpha: 0, yPercent: 60 },
-          { autoAlpha: 1, yPercent: 0, duration: 1.4, ease: "expo.out", stagger: 0.12, delay: 0.15 },
-        );
-
-        gsap.fromTo(
-          "[data-hero-orbit]",
-          { autoAlpha: 0 },
-          { autoAlpha: 1, duration: 2.2, ease: "power2.out", delay: 0.4 },
-        );
-
         // Scroll-out: headline lifts and fades, background slowly pushes in.
         const tl = gsap.timeline({
           scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
@@ -89,27 +78,52 @@ export default function Hero({ media, backdrop }: { media: HeroMedia; backdrop: 
 
       <div data-hero-copy className="container-x relative flex h-full flex-col justify-end pb-24 md:pb-28">
         <div className="overflow-hidden">
-          <p data-hero-in className="eyebrow mb-5 text-fg/80">
+          <p data-hero-in style={{ "--hero-i": 0 } as React.CSSProperties} className="eyebrow mb-5 text-fg/80">
             <span className="mr-3 inline-block h-2 w-2 bg-accent align-middle" aria-hidden="true" />
             {site.company} · {site.city}
           </p>
         </div>
         <h1 className="display text-[clamp(4.5rem,21vw,13rem)] md:text-[clamp(4.5rem,15vw,13rem)]">
           <span className="block overflow-hidden pb-[0.04em]">
-            <span data-hero-in className="block">
+            <span data-hero-in style={{ "--hero-i": 1 } as React.CSSProperties} className="block">
               Luke
             </span>
           </span>
           <span className="block overflow-hidden pb-[0.04em]">
-            <span data-hero-in className="block">
+            <span data-hero-in style={{ "--hero-i": 2 } as React.CSSProperties} className="block">
               Horton
             </span>
           </span>
         </h1>
         <div className="overflow-hidden">
-          <p data-hero-in className="display mt-4 text-2xl font-medium tracking-[0.2em] text-fg/85 md:text-4xl">
+          <p
+            data-hero-in
+            style={{ "--hero-i": 3 } as React.CSSProperties}
+            className="display mt-4 text-2xl font-medium tracking-[0.2em] text-fg/85 md:text-4xl"
+          >
             {site.title}
           </p>
+        </div>
+        <p
+          data-hero-in
+          style={{ "--hero-i": 4 } as React.CSSProperties}
+          className="mt-5 max-w-[34ch] text-base leading-snug text-fg/70 md:text-lg"
+        >
+          {site.tagline}
+        </p>
+        <div data-hero-in style={{ "--hero-i": 5 } as React.CSSProperties} className="mt-7 flex flex-wrap gap-3">
+          <a
+            href={site.resume}
+            target="_blank"
+            rel="noopener"
+            className="btn-line btn-accent"
+            data-testid="hero-cta-resume"
+          >
+            Resume <span aria-hidden="true">↗</span>
+          </a>
+          <a href="#contact" className="btn-line" data-testid="hero-cta-contact">
+            Contact
+          </a>
         </div>
       </div>
 

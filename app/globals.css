@@ -85,23 +85,67 @@
     color: var(--color-ink);
     border-color: #fff;
   }
-  .todo {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: #fbbf24;
-    border: 1px dashed rgb(251 191 36 / 0.5);
-    padding: 0.35rem 0.6rem;
-    display: inline-block;
+  .btn-accent {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: #fff;
+  }
+  .btn-accent:hover {
+    background: #fff;
+    border-color: #fff;
+    color: var(--color-ink);
   }
 }
 
-/* Reveal targets start hidden only when JS is running and motion is allowed.
-   (The `js` class is set by an inline script in <head> before paint.) */
+/* Content never depends on JavaScript to appear.
+   - Hero: the intro is pure CSS and ends visible (fill-mode both), so the
+     headline and calls to action show even if no script ever runs.
+   - Scroll reveals: hidden only while the motion code is expected to take
+     over. `js` is added by the inline <head> script; `motion-ready` is added
+     by Motion.tsx once ScrollTrigger owns these elements (GSAP then holds them
+     hidden inline until they scroll into view). If the bundle is slow, blocked
+     or throws, the failsafe animation un-hides everything after 2.5s. With
+     JavaScript disabled, `js` is never set and nothing is hidden.
+   - prefers-reduced-motion: none of this applies; everything is static. */
 @media (prefers-reduced-motion: no-preference) {
-  .js [data-reveal],
-  .js [data-hero-in],
-  .js [data-hero-orbit] {
+  [data-hero-in] {
+    animation: hero-in 1.4s var(--ease-out-expo) both;
+    animation-delay: calc(0.15s + var(--hero-i, 0) * 0.12s);
+  }
+  [data-hero-orbit] {
+    animation: hero-fade 2.2s ease-out 0.4s both;
+  }
+  .js:not(.motion-ready) [data-reveal] {
+    animation: reveal-failsafe 0.6s ease-out 2.5s both;
+  }
+}
+
+@keyframes hero-in {
+  from {
     opacity: 0;
+    transform: translateY(60%);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes reveal-failsafe {
+  from {
+    opacity: 0;
+    visibility: hidden;
+  }
+  to {
+    opacity: 1;
+    visibility: visible;
   }
 }
 
