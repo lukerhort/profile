@@ -265,7 +265,7 @@ export function TrackReticle({ className = "" }: { className?: string }) {
           intro
             .fromTo(brackets, { scale: 1.35 }, { scale: 1, duration: 0.45, ease: "back.out(2.2)" })
             .call(() => setStatus("LOCK"), [], "<0.1")
-            .fromTo(status, { opacity: 0 }, { opacity: 1, duration: 0.08, repeat: 4, yoyo: true, ease: "steps(1)" }, "<");
+            .fromTo(status, { opacity: 0 }, { opacity: 1, duration: 0.08, repeat: 4, yoyo: true, ease: "steps(1)", immediateRender: false }, "<");
 
           // --- Readouts at ~10 Hz.
           const t0 = gsap.ticker.time;
