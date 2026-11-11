@@ -212,3 +212,118 @@
     transform: rotate(360deg);
   }
 }
+
+/* ===========================================================================
+   Hero: focal light, breathing limb halo, acquisition sweep, tracker
+   =========================================================================== */
+.hero-focal {
+  background:
+    radial-gradient(38% 46% at 76% 30%, rgb(110 140 255 / 0.11), transparent 70%),
+    radial-gradient(22% 26% at 75% 31%, rgb(204 0 51 / 0.1), transparent 70%),
+    radial-gradient(70% 40% at 30% 100%, rgb(204 0 51 / 0.1), transparent 70%);
+}
+.hero-halo {
+  opacity: 0.65;
+  will-change: opacity;
+}
+.hero-scan {
+  display: none;
+}
+.trk-readout {
+  font-size: 10px;
+  line-height: 1.35;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+@media (min-width: 768px) {
+  .trk-readout {
+    font-size: 11px;
+  }
+}
+.trk-status {
+  display: inline-block;
+  min-width: 4.6em;
+  padding: 0.15em 0.5em;
+  text-align: center;
+  color: #fff;
+  background: var(--color-accent);
+  letter-spacing: 0.2em;
+}
+.trk-status[data-state="ACQ"],
+.trk-status[data-state="SLEW"] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.6);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hero-halo {
+    animation: halo-breathe 6s ease-in-out infinite alternate;
+  }
+  .trk-drift {
+    animation: trk-drift 20s ease-in-out infinite;
+  }
+  .trk-circle {
+    animation: circle 9s linear infinite;
+  }
+  .trk-blink {
+    animation: blink 1.6s steps(2) infinite;
+  }
+  .trk-breathe {
+    animation: lock 4s ease-in-out 2.6s infinite;
+  }
+  .hero-scan {
+    display: block;
+  }
+  .hero-scan-beam {
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    width: 220px;
+    opacity: 0;
+    background: linear-gradient(90deg, transparent, rgb(204 0 51 / 0.07) 70%, rgb(255 60 100 / 0.22) 99%, transparent);
+    border-right: 1px solid rgb(255 90 120 / 0.85);
+    box-shadow: 6px 0 18px -4px rgb(204 0 51 / 0.6);
+    animation: hero-scan 1.25s cubic-bezier(0.55, 0.05, 0.35, 1) 1.2s both;
+  }
+}
+@keyframes halo-breathe {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 0.8;
+  }
+}
+@keyframes trk-drift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-8px, 5px);
+  }
+  50% {
+    transform: translate(-14px, -3px);
+  }
+  75% {
+    transform: translate(-4px, -7px);
+  }
+}
+@keyframes hero-scan {
+  0% {
+    opacity: 0;
+    transform: translateX(-220px);
+  }
+  12% {
+    opacity: 1;
+  }
+  88% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(100vw);
+  }
+}
+

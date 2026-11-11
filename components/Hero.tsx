@@ -19,6 +19,28 @@ export default function Hero({ media, backdrop }: { media: HeroMedia; backdrop: 
       // The intro is a CSS animation (see [data-hero-in] in globals.css) so the
       // hero never depends on this bundle to become visible.
       const mm = gsap.matchMedia();
+      mm.add(
+        "(prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) and (min-width: 768px)",
+        () => {
+          // Depth: far layer (sky) and near layer (orbits, tracker) shift by
+          // different amounts as the cursor moves.
+          const bx = gsap.quickTo("[data-hero-bg]", "x", { duration: 1.4, ease: "power3.out" });
+          const by = gsap.quickTo("[data-hero-bg]", "y", { duration: 1.4, ease: "power3.out" });
+          const ox = gsap.quickTo("[data-hero-orbit]", "x", { duration: 1.4, ease: "power3.out" });
+          const oy = gsap.quickTo("[data-hero-orbit]", "y", { duration: 1.4, ease: "power3.out" });
+          const section = root.current!;
+          const onMove = (e: PointerEvent) => {
+            const nx = e.clientX / window.innerWidth - 0.5;
+            const ny = e.clientY / window.innerHeight - 0.5;
+            bx(nx * -10);
+            by(ny * -6);
+            ox(nx * -22);
+            oy(ny * -12);
+          };
+          section.addEventListener("pointermove", onMove);
+          return () => section.removeEventListener("pointermove", onMove);
+        },
+      );
       mm.add("(prefers-reduced-motion: no-preference)", () => {
         // Scroll-out: headline lifts and fades, background slowly pushes in.
         const tl = gsap.timeline({
@@ -71,7 +93,12 @@ export default function Hero({ media, backdrop }: { media: HeroMedia; backdrop: 
       {/* Orbital traffic + tracked object (sit above any hero media) */}
       <div data-hero-orbit className="pointer-events-none absolute inset-0">
         <OrbitalTraffic />
-        <TrackReticle className="absolute left-[30%] top-[16%] w-[240px] md:left-auto md:right-[9%] md:top-[20%] md:w-[min(30vw,420px)]" />
+        <TrackReticle className="absolute left-[28%] top-[14%] w-[240px] md:left-auto md:right-[9%] md:top-[18%] md:w-[min(30vw,420px)]" />
+      </div>
+
+      {/* One-off acquisition sweep (CSS; hidden with reduced motion) */}
+      <div className="hero-scan pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+        <span className="hero-scan-beam" />
       </div>
 
       <div data-hero-shade className="pointer-events-none absolute inset-0 bg-ink opacity-0" />
