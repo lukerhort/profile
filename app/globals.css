@@ -1,14 +1,18 @@
 @import "tailwindcss";
 @import "lenis/dist/lenis.css";
+@import "./sections.css";
 
 @theme {
   --color-ink: #050506;
   --color-ink-2: #0c0c0e;
   --color-fg: #f2f2f3;
-  --color-muted: #8b8b92;
-  --color-dim: #55555b;
+  --color-muted: #9b9ba2;
+  /* >= 4.5:1 on ink and ink-2 (4.8 / 4.6); still clearly dimmer than muted */
+  --color-dim: #7a7a81;
   --color-line: rgb(255 255 255 / 0.1);
   --color-accent: #cc0033;
+  /* Brighter crimson for small TEXT only (>= 4.5:1 on ink and ink-2). */
+  --color-accent-text: #ff2e52;
 
   --font-display: var(--font-barlow), "Arial Narrow", sans-serif;
   --font-sans: var(--font-inter), system-ui, sans-serif;
@@ -95,6 +99,15 @@
     border-color: #fff;
     color: var(--color-ink);
   }
+}
+
+/* Small text in the accent colour uses the brighter crimson for contrast; fills,
+   borders and large display text keep --color-accent. Unlayered on purpose so
+   it wins over the utilities layer. */
+.text-accent,
+.hover\:text-accent:hover,
+.group:hover .group-hover\:text-accent {
+  color: var(--color-accent-text);
 }
 
 /* Content never depends on JavaScript to appear.

@@ -83,3 +83,29 @@ export async function hiddenTextElements(page: Page, ignore: string[] = []): Pro
 }
 
 export const SECTION_IDS = ["top", "about", "experience", "projects", "education", "leadership", "contact"];
+
+/**
+ * The fixed header intentionally slides away while scrolling down and returns on
+ * scroll up (so it is genuinely off-screen, and Playwright is right to refuse to
+ * click it). Scroll up a touch, as a visitor would, and wait until it is back.
+ */
+export async function revealHeader(page: Page) {
+  // Let any smooth scroll in flight come to rest, or it overrides our nudge.
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) => {
+        let last = -1;
+        let stable = 0;
+        const tick = () => {
+          stable = window.scrollY === last ? stable + 1 : 0;
+          last = window.scrollY;
+          stable >= 8 ? resolve() : requestAnimationFrame(tick);
+        };
+        tick();
+      }),
+  );
+  // A real wheel tick, as a visitor would use; Lenis (desktop) overrides programmatic scrolls.
+  await page.mouse.move(200, 400);
+  await page.mouse.wheel(0, -120);
+  await page.waitForFunction(() => document.querySelector("header")!.getBoundingClientRect().top >= -1, undefined, { timeout: 5_000 });
+}

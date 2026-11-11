@@ -46,7 +46,7 @@ export default function Nav() {
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-[transform,background-color,border-color] duration-500 ease-(--ease-out-expo) ${
         show ? "translate-y-0" : "-translate-y-full"
-      } ${solid || open ? "border-b border-line bg-ink/80 backdrop-blur-md" : "border-b border-transparent"}`}
+      } ${open ? "border-b border-line bg-ink" : solid ? "border-b border-line bg-ink/80 backdrop-blur-md" : "border-b border-transparent"}`}
     >
       <nav className="container-x flex h-16 items-center justify-between md:h-20" aria-label="Primary">
         <a href="#top" className="display text-xl tracking-[0.18em] md:text-2xl" onClick={() => setOpen(false)}>
@@ -95,21 +95,21 @@ export default function Nav() {
 
       <div
         id="mobile-menu"
-        className={`fixed inset-x-0 top-16 h-[calc(100dvh-4rem)] bg-ink/95 backdrop-blur-lg transition-opacity duration-300 md:hidden ${
+        className={`${open ? "menu-open " : ""}fixed inset-x-0 top-16 h-[calc(100dvh-4rem)] bg-ink transition-opacity duration-300 md:hidden ${
           open ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
         aria-hidden={!open}
         inert={!open}
       >
         <ul className="container-x flex flex-col gap-6 pt-10">
-          {nav.map((item) => (
-            <li key={item.href}>
+          {nav.map((item, i) => (
+            <li key={item.href} className="menu-link" style={{ "--i": i } as React.CSSProperties}>
               <a href={item.href} className="display text-5xl" onClick={() => setOpen(false)}>
                 {item.label}
               </a>
             </li>
           ))}
-          <li>
+          <li className="menu-link" style={{ "--i": nav.length } as React.CSSProperties}>
             <a href={site.resume} target="_blank" rel="noopener" className="display text-5xl text-accent">
               Resume ↗
             </a>

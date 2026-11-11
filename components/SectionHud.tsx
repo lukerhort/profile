@@ -3,7 +3,17 @@
 import { useEffect, useRef, useState } from "react";
 import { nav } from "@/lib/content";
 
-const SECTIONS = [{ href: "#top", label: "Home" }, ...nav];
+/**
+ * Index N here is the number printed in section N's own eyebrow (01 About ...
+ * 06 Contact). Leadership has a section and a HUD entry but is not in the top
+ * nav, which stays at five links plus Resume.
+ */
+const SECTIONS = [
+  { href: "#top", label: "Home" },
+  ...nav.filter((n) => n.href !== "#contact"),
+  { href: "#leadership", label: "Leadership" },
+  ...nav.filter((n) => n.href === "#contact"),
+];
 
 /** Fixed left-gutter indicator: current section + page progress. Desktop only. */
 export default function SectionHud() {
@@ -39,11 +49,12 @@ export default function SectionHud() {
 
   return (
     <div
+      data-section-hud
       className="pointer-events-none fixed bottom-6 left-3 z-40 hidden w-9 flex-col items-center gap-3 lg:flex xl:left-5"
       aria-hidden="true"
     >
       <span className="rotate-180 font-mono text-[0.62rem] tracking-[0.2em] text-fg/75 uppercase [writing-mode:vertical-rl]">
-        <span className="text-accent">{String(active).padStart(2, "0")}</span>
+        <span className="text-accent" data-hud-index>{String(active).padStart(2, "0")}</span>
         <span className="text-fg/35">&nbsp;&nbsp;/&nbsp;&nbsp;</span>
         {SECTIONS[active].label}
       </span>

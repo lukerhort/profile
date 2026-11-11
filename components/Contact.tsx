@@ -15,7 +15,7 @@ export default function Contact() {
         data-orbit-spin="40"
         className="pointer-events-none absolute right-[-35%] top-10 w-[150%] md:right-[-12%] md:top-16 md:w-[70%]"
       >
-        <OrbitRings className="h-auto w-full" />
+        <OrbitRings className="h-auto w-full" boost={1.45} />
       </div>
       <div className="container-x relative" data-reveal-group>
         <p className="eyebrow flex items-center gap-4" data-reveal>
@@ -38,18 +38,22 @@ export default function Contact() {
                 <a
                   href={l.href}
                   {...(external ? { target: "_blank", rel: "noopener" } : {})}
-                  className="group flex items-center justify-between gap-6 py-6 transition-colors hover:text-accent md:py-8"
+                  className="contact-row group relative isolate flex flex-wrap items-center gap-x-4 gap-y-1 overflow-hidden px-4 py-5 md:flex-nowrap md:gap-x-6 md:px-6 md:py-8"
                 >
-                  <span className="eyebrow w-28 shrink-0 group-hover:text-accent">{l.label}</span>
+                  <span aria-hidden="true" className="contact-fill absolute inset-0 -z-10 bg-accent" />
+                  <span className="eyebrow contact-label w-full shrink-0 md:w-28">{l.label}</span>
                   <span
-                    className={`display flex-1 truncate text-2xl md:text-5xl ${l.label === "Email" ? "normal-case" : ""}`}
+                    className={`display min-w-0 flex-1 text-[1.45rem] leading-[1.2] [overflow-wrap:anywhere] md:text-5xl md:leading-[1.15] ${l.label === "Email" ? "normal-case" : ""}`}
                   >
                     {l.value}
                   </span>
                   <span
                     aria-hidden="true"
-                    className="text-2xl transition-transform duration-500 ease-(--ease-out-expo) group-hover:translate-x-2"
+                    className="contact-tx hidden shrink-0 border border-white/70 px-2 py-1 font-mono text-[0.62rem] uppercase tracking-[0.2em] text-white sm:inline-block"
                   >
+                    TX ready
+                  </span>
+                  <span aria-hidden="true" className="contact-arrow shrink-0 text-2xl">
                     →
                   </span>
                 </a>
