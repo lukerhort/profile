@@ -327,3 +327,48 @@
   }
 }
 
+/* ===========================================================================
+   Experience: decoding titles, rail tick, ghost index numeral
+   =========================================================================== */
+.scramble-fx {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.scramble-on {
+  color: transparent;
+}
+.exp-tick {
+  display: none;
+  position: absolute;
+  left: -7px;
+  top: -1px;
+  width: 15px;
+  height: 2px;
+  background: var(--color-accent);
+  box-shadow: 0 0 10px 1px rgb(204 0 51 / 0.7);
+}
+.exp-pinned .exp-tick {
+  display: block;
+}
+.exp-ghost {
+  display: none;
+}
+.exp-pinned .exp-ghost {
+  display: block;
+}
+.exp-ghost-n {
+  position: absolute;
+  right: 1.5vw;
+  top: calc(50% - 0.4em);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 30vw;
+  line-height: 0.8;
+  letter-spacing: -0.02em;
+  color: rgb(255 255 255 / 0.04);
+}
+.exp-ghost-n::before {
+  content: attr(data-n);
+}
+

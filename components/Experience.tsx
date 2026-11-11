@@ -6,13 +6,18 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import { experience } from "@/lib/content";
 import SectionHeading from "./SectionHeading";
+import { scramble, settle } from "./scramble";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
+const pad = (n: number) => String(n).padStart(2, "0");
+
 /**
  * Experience timeline. On large screens with motion allowed, the section pins
- * and scrolling advances through roles one at a time (cross-fade + progress
- * rail). On mobile / reduced motion it is a plain stacked list.
+ * and scrolling advances through roles one at a time (masked slide, progress
+ * rail with a crimson tick, a ghost index numeral, and the role title decoding
+ * from glyphs). On mobile each title decodes once as its card reveals. With
+ * reduced motion it is a plain stacked list.
  */
 export default function Experience() {
   const root = useRef<HTMLElement>(null);
@@ -22,8 +27,11 @@ export default function Experience() {
     () => {
       const section = root.current!;
       const cards = gsap.utils.toArray<HTMLElement>("[data-exp-card]", section);
+      const titles = cards.map((c) => c.querySelector<HTMLElement>("[data-scramble-host]")!);
       const railItems = gsap.utils.toArray<HTMLElement>("[data-exp-rail]", section);
       const counter = section.querySelector<HTMLElement>("[data-exp-counter]");
+      const tick = section.querySelector<HTMLElement>("[data-exp-tick]")!;
+      const ghost = section.querySelector<HTMLElement>("[data-exp-ghost]")!;
       const mm = gsap.matchMedia();
 
       mm.add("(min-width: 1024px) and (prefers-reduced-motion: no-preference)", () => {
@@ -37,11 +45,25 @@ export default function Experience() {
         const stage = section.querySelector<HTMLElement>(".exp-stage")!;
         const shift = () => stage.offsetHeight;
 
-        const setActive = (idx: number) => {
-          railItems.forEach((el, i) => el.classList.toggle("is-active", i === idx));
-          if (counter) counter.textContent = String(idx + 1).padStart(2, "0");
+        // Crimson tick rides the rail to the active role.
+        const tickY = (idx: number) => {
+          const li = railItems[idx];
+          return li.offsetTop + li.offsetHeight / 2;
         };
-        setActive(0);
+        gsap.set(tick, { y: tickY(0), autoAlpha: 1 });
+
+        let current = 0;
+        const setActive = (idx: number) => {
+          if (idx === current) return;
+          current = idx;
+          railItems.forEach((el, i) => el.classList.toggle("is-active", i === idx));
+          if (counter) counter.textContent = pad(idx + 1);
+          gsap.to(tick, { y: tickY(idx), duration: 0.45, ease: "expo.out", overwrite: true });
+          ghost.dataset.n = pad(idx + 1);
+          gsap.fromTo(ghost, { autoAlpha: 0, yPercent: 6 }, { autoAlpha: 1, yPercent: 0, duration: 0.7, ease: "expo.out", overwrite: true });
+          titles.forEach((t, i) => (i === idx ? scramble(t) : settle(t)));
+        };
+        railItems[0].classList.add("is-active");
 
         const tl = gsap.timeline({
           defaults: { ease: "power2.inOut" },
@@ -52,6 +74,7 @@ export default function Experience() {
             pin: true,
             scrub: 0.6,
             invalidateOnRefresh: true,
+            onRefresh: () => gsap.set(tick, { y: tickY(current) }),
             onUpdate: (self) => {
               const t = self.progress * tl.duration();
               const idx = starts.filter((s) => t > s + FADE / 2).length;
@@ -77,11 +100,13 @@ export default function Experience() {
         return () => {
           section.classList.remove("exp-pinned");
           railItems.forEach((el) => el.classList.remove("is-active"));
+          titles.forEach(settle);
+          ghost.dataset.n = "01";
         };
       });
 
       mm.add("(max-width: 1023px) and (prefers-reduced-motion: no-preference)", () => {
-        cards.forEach((card) =>
+        cards.forEach((card, i) =>
           gsap.fromTo(
             card,
             { autoAlpha: 0, y: 48 },
@@ -91,9 +116,11 @@ export default function Experience() {
               duration: 1,
               ease: "expo.out",
               scrollTrigger: { trigger: card, start: "top 85%", once: true },
+              onStart: () => scramble(titles[i], 0.6),
             },
           ),
         );
+        return () => titles.forEach(settle);
       });
     },
     { scope: root },
@@ -105,7 +132,12 @@ export default function Experience() {
       id="experience"
       className="relative border-t border-line bg-ink py-28 lg:flex lg:h-svh lg:items-center lg:py-0"
     >
-      <div className="container-x grid gap-14 lg:grid-cols-12 lg:gap-12">
+      {/* Ghost index numeral behind the active role (pinned mode only; drawn via CSS content). */}
+      <div className="exp-ghost pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+        <span data-exp-ghost data-n="01" className="exp-ghost-n" />
+      </div>
+
+      <div className="container-x relative grid gap-14 lg:grid-cols-12 lg:gap-12">
         {/* Left: heading, counter, progress rail */}
         <div className="lg:col-span-4">
           <SectionHeading index="02" label="Experience" title="Where I work" reveal={false} />
@@ -113,15 +145,16 @@ export default function Experience() {
             <span data-exp-counter className="display text-7xl text-fg">
               01
             </span>
-            <span className="display pb-2 text-2xl text-dim">/ {String(n).padStart(2, "0")}</span>
+            <span className="display pb-2 text-2xl text-muted">/ {pad(n)}</span>
           </div>
           <ol className="relative mt-10 hidden border-l border-line lg:block" aria-hidden="true">
             <span data-exp-fill className="absolute -left-px top-0 h-full w-px origin-top bg-accent" />
+            <span data-exp-tick className="exp-tick" />
             {experience.map((r) => (
               <li
                 key={r.title + r.dates}
                 data-exp-rail
-                className="py-2.5 pl-6 text-dim transition-colors duration-300 [&.is-active]:text-fg"
+                className="py-2.5 pl-6 text-muted transition-colors duration-300 [&.is-active]:text-fg"
               >
                 <span className="block font-mono text-[0.68rem] uppercase tracking-[0.2em]">{r.dates}</span>
                 <span className="block text-sm">{r.org}</span>
@@ -139,11 +172,14 @@ export default function Experience() {
               className="border-l border-line pl-6 lg:self-center lg:border-0 lg:pl-0"
             >
               <p className="eyebrow flex flex-wrap items-center gap-x-4 gap-y-1">
-                <span className="text-accent">{String(i + 1).padStart(2, "0")}</span>
+                <span className="text-accent">{pad(i + 1)}</span>
                 <span>{r.dates}</span>
-                {r.type ? <span className="text-dim">{r.type}</span> : null}
+                {r.type ? <span className="text-muted">{r.type}</span> : null}
               </p>
-              <h3 className="display mt-5 text-[clamp(2.25rem,5vw,4.75rem)]">{r.title}</h3>
+              <h3 data-scramble-host className="display relative mt-5 text-[clamp(2.25rem,5vw,4.75rem)]">
+                <span data-scramble-src>{r.title}</span>
+                <span data-scramble-fx aria-hidden="true" className="scramble-fx" />
+              </h3>
               <p className="mt-3 text-lg text-fg/85 md:text-xl">
                 {r.org}
                 {r.location ? <span className="text-muted"> · {r.location}</span> : null}
