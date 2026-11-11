@@ -218,3 +218,33 @@ html:not(.js) .site-header {
     --pad: 1.5rem;
   }
 }
+
+/* ---------- Hero mini game ---------- */
+
+/* The hint and the score only show once the game is in use (mouse or pen, motion allowed). */
+.hero-game-hint,
+.hero-game-hud {
+  position: absolute;
+  right: 1.25rem;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+.hero-game-hint {
+  bottom: 6.5rem;
+  color: var(--color-accent-text);
+}
+.hero-game-hud {
+  bottom: 6.5rem;
+  color: var(--color-fg);
+  font-variant-numeric: tabular-nums;
+}
+.hero-game-hint[data-on="true"]:not([data-done="true"]),
+.hero-game-hud[data-on="true"] {
+  opacity: 0.9;
+}
+@media (min-width: 768px) {
+  .hero-game-hint,
+  .hero-game-hud {
+    right: 3rem;
+  }
+}

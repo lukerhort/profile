@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { useGSAP } from "@gsap/react";
 import { site } from "@/lib/content";
 import { OrbitalTraffic, TrackReticle } from "./TrackingLayer";
+import HeroGame from "./HeroGame";
 
 export type HeroMedia = {
   video?: string[]; // e.g. ["/media/hero.webm", "/media/hero.mp4"]
@@ -173,6 +174,9 @@ export default function Hero({ media, backdrop }: { media: HeroMedia; backdrop: 
           </a>
         </div>
       </div>
+
+      {/* Mini game: drawn over the copy, but it never takes pointer events. */}
+      <HeroGame />
 
       <a
         href="#about"

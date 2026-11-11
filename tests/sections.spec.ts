@@ -302,3 +302,95 @@ test.describe("content", () => {
     expect(await page.content()).not.toMatch(/\bSBI\b|interceptor/i);
   });
 });
+
+test.describe("hero mini game", () => {
+  const game = (page: Page) => page.getByTestId("hero-game");
+
+  test("a click in the hero fires, and holding the button keeps firing", async ({ page }, info) => {
+    test.skip(info.project.name !== "desktop", "mouse only");
+    await page.goto("/");
+    await waitForReady(page);
+    await expect(game(page)).toHaveAttribute("data-active", "true");
+    await page.mouse.move(900, 620);
+    await expect(page.locator(".hero-game-hint")).toHaveCSS("opacity", "0.9");
+    await page.mouse.click(900, 620);
+    // One click is one shot (two if the machine is slow enough that the press outlasts the fire interval).
+    await expect.poll(async () => Number(await game(page).getAttribute("data-shots"))).toBeGreaterThanOrEqual(1);
+    const single = Number(await game(page).getAttribute("data-shots"));
+    expect(single).toBeLessThanOrEqual(2);
+    await expect(page.locator(".hero-game-hint")).toHaveCSS("opacity", "0");
+    await page.mouse.down();
+    await page.waitForTimeout(700);
+    await page.mouse.up();
+    const held = Number(await game(page).getAttribute("data-shots"));
+    expect(held).toBeGreaterThanOrEqual(single + 3);
+    await page.waitForTimeout(400);
+    expect(Number(await game(page).getAttribute("data-shots")), "stops when the button is released").toBe(held);
+  });
+
+  test("shots destroy debris and the score shows", async ({ page }, info) => {
+    test.skip(info.project.name !== "desktop", "mouse only");
+    test.setTimeout(90_000);
+    await page.goto("/");
+    await waitForReady(page);
+    // Sweep back and forth across the hero while holding fire until something is hit.
+    await expect(game(page)).toHaveAttribute("data-active", "true");
+    // Start on the big name, where a careless build would begin selecting text.
+    await page.mouse.move(300, 450);
+    await page.mouse.down();
+    await expect
+      .poll(
+        async () => {
+          for (let x = 150; x <= 1300; x += 25) {
+            await page.mouse.move(x, 650);
+            await page.waitForTimeout(15);
+          }
+          return Number(await game(page).getAttribute("data-score"));
+        },
+        { timeout: 60_000 },
+      )
+      .toBeGreaterThan(0);
+    await page.mouse.up();
+    expect(await page.evaluate(() => String(getSelection())), "no text got selected while firing").toBe("");
+    await expect(page.locator(".hero-game-hud")).toHaveText(/Debris cleared \d{3}/);
+    await expect(page.locator(".hero-game-hud")).toHaveCSS("opacity", "0.9");
+  });
+
+  test("clicks on the hero buttons and the nav do not fire, and still work", async ({ page }, info) => {
+    test.skip(info.project.name !== "desktop", "mouse only");
+    await page.goto("/");
+    await waitForReady(page);
+    await expect(game(page)).toHaveAttribute("data-active", "true");
+    // click() waits for the intro animation to finish, so the press lands on the button.
+    await page.locator('[data-testid="hero-cta-contact"]').click();
+    await expect(game(page)).toHaveAttribute("data-shots", "0");
+    await expect.poll(() => page.evaluate(() => location.hash)).toBe("#contact");
+  });
+
+  test("it stops while the hero is off screen", async ({ page }, info) => {
+    test.skip(info.project.name !== "desktop", "mouse only");
+    await page.goto("/");
+    await waitForReady(page);
+    await expect(game(page)).toHaveAttribute("data-active", "true");
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight));
+    await expect(game(page)).toHaveAttribute("data-active", "false");
+  });
+
+  test("it does not run on a touch screen", async ({ page }, info) => {
+    test.skip(info.project.name !== "mobile", "touch only");
+    await page.goto("/");
+    await waitForReady(page);
+    await expect(game(page)).toHaveAttribute("data-active", "false");
+    await page.touchscreen.tap(200, 300);
+    await expect(game(page)).toHaveAttribute("data-shots", "0");
+  });
+
+  test.describe("reduced motion", () => {
+    test.use({ reducedMotion: "reduce" });
+    test("it does not run", async ({ page }) => {
+      await page.goto("/");
+      await waitForReady(page);
+      await expect(game(page)).toHaveAttribute("data-active", "false");
+    });
+  });
+});
