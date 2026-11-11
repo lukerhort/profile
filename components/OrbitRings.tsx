@@ -16,7 +16,7 @@ export default function OrbitRings({ className = "", boost = 1 }: { className?: 
         return (
           <g key={i} transform={`rotate(${r.tilt})`}>
             <ellipse rx={r.rx} ry={r.ry} stroke="#fff" strokeOpacity={Math.min(r.opacity * boost, 1)} strokeDasharray={r.dash} />
-            <circle cx={x.toFixed(1)} cy={y.toFixed(1)} r={i === 0 ? 4 : 2.5} fill={i === 0 ? "#cc0033" : "#fff"} fillOpacity={i === 0 ? 1 : 0.5} />
+            <circle cx={x.toFixed(1)} cy={y.toFixed(1)} r={i === 0 ? 4 : 2.5} fill={i === 0 ? "#f26b1d" : "#fff"} fillOpacity={i === 0 ? 1 : 0.5} />
             {i === 0 ? (
               <path
                 transform={`translate(${x.toFixed(1)} ${y.toFixed(1)})`}

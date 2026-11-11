@@ -11,7 +11,7 @@ type Group = { group: string; items: string[] };
 
 /**
  * "Systems schematic": skill groups as nodes on a hairline grid. From `sm` up
- * the nodes hang off a shared horizontal bus (one crimson trace across the
+ * the nodes hang off a shared horizontal bus (one orange trace across the
  * row, a junction dot above each node and a vertical drop down to it); on
  * phones the bus is omitted and each group is just a node and its chips, to
  * keep the layout compact.

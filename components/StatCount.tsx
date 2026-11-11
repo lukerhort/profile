@@ -8,7 +8,7 @@ import { useGSAP } from "@gsap/react";
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 /**
- * A big stat that counts up once when scrolled into view, with a crimson rule
+ * A big stat that counts up once when scrolled into view, with an orange rule
  * drawing in beneath it. The final value ("$200K+") is the server-rendered
  * text; the tween only runs when motion is allowed, preserves the prefix and
  * suffix around the number, and always ends on the exact original string.

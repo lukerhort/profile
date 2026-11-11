@@ -82,7 +82,7 @@ export async function hiddenTextElements(page: Page, ignore: string[] = []): Pro
   }, ignore);
 }
 
-export const SECTION_IDS = ["top", "about", "experience", "projects", "education", "leadership", "contact"];
+export const SECTION_IDS = ["top", "about", "experience", "projects", "education", "contact"];
 
 /**
  * The fixed header intentionally slides away while scrolling down and returns on

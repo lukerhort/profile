@@ -10,9 +10,7 @@ import { nav } from "@/lib/content";
  */
 const SECTIONS = [
   { href: "#top", label: "Home" },
-  ...nav.filter((n) => n.href !== "#contact"),
-  { href: "#leadership", label: "Leadership" },
-  ...nav.filter((n) => n.href === "#contact"),
+  ...nav,
 ];
 
 /** Fixed left-gutter indicator: current section + page progress. Desktop only. */

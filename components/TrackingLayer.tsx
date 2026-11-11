@@ -395,23 +395,23 @@ export function TrackReticle({ className = "" }: { className?: string }) {
           <circle r="46" fill="url(#trk-glow)" />
           <defs>
             <radialGradient id="trk-glow">
-              <stop offset="0%" stopColor="#cc0033" stopOpacity="0.28" />
-              <stop offset="100%" stopColor="#cc0033" stopOpacity="0" />
+              <stop offset="0%" stopColor="#f26b1d" stopOpacity="0.28" />
+              <stop offset="100%" stopColor="#f26b1d" stopOpacity="0" />
             </radialGradient>
           </defs>
 
           {/* Proximity-ops path + chaser vehicle */}
-          <circle r="34" stroke="#cc0033" strokeOpacity="0.6" strokeDasharray="3 5" />
+          <circle r="34" stroke="#f26b1d" strokeOpacity="0.6" strokeDasharray="3 5" />
           <g className="trk-circle" style={ORIGIN}>
             <g transform="translate(34 0)">
-              <circle r="7" stroke="#cc0033" strokeOpacity="0.55" />
-              <rect x="-2.5" y="-2.5" width="5" height="5" fill="#ff1f4f" />
+              <circle r="7" stroke="#f26b1d" strokeOpacity="0.55" />
+              <rect x="-2.5" y="-2.5" width="5" height="5" fill="#ff8a3d" />
             </g>
           </g>
 
           {/* Target spacecraft: bus + solar arrays */}
           <g stroke="#fff" strokeOpacity="0.9">
-            <rect x="-5" y="-5" width="10" height="10" fill="#050506" />
+            <rect x="-5" y="-5" width="10" height="10" fill="#060504" />
             <path d="M-5 0 H-10 M5 0 H10" />
             <rect x="-24" y="-4" width="14" height="8" fill="#fff" fillOpacity="0.1" />
             <rect x="10" y="-4" width="14" height="8" fill="#fff" fillOpacity="0.1" />
@@ -427,7 +427,7 @@ export function TrackReticle({ className = "" }: { className?: string }) {
               PROX OPS
             </text>
           </g>
-          <circle cx="170" cy="-84" r="2.5" fill="#cc0033" className="trk-blink" />
+          <circle cx="170" cy="-84" r="2.5" fill="#f26b1d" className="trk-blink" />
         </svg>
 
         {/* Reticle: same frame as the target, moved as a whole by GSAP (x/y). */}

@@ -6,7 +6,7 @@ export default function Contact() {
     { label: "Email", value: site.email, href: `mailto:${site.email}` },
     { label: "LinkedIn", value: "luke-r-horton", href: site.links.linkedin },
     { label: "GitHub", value: "lukerhort", href: site.links.github },
-    { label: "Resume", value: "Download PDF", href: site.resume },
+    { label: "Resume", value: `PDF · ${site.resumeDate}`, href: site.resume },
   ];
 
   return (
@@ -22,7 +22,7 @@ export default function Contact() {
       </div>
       <div className="container-x relative" data-reveal-group>
         <p className="eyebrow flex items-center gap-4" data-reveal>
-          <span className="text-accent">06</span>
+          <span className="text-accent">05</span>
           <span className="h-px w-10 bg-line" aria-hidden="true" />
           Contact
         </p>
@@ -30,7 +30,7 @@ export default function Contact() {
           Let&rsquo;s talk
         </h2>
         <p className="mt-6 max-w-xl text-lg text-fg/70" data-reveal>
-          Always happy to talk spacecraft avionics, systems engineering, test, or hardware that flies.
+          Email is the fastest way to reach me.
         </p>
 
         <ul className="mt-16 divide-y divide-line border-y border-line" data-reveal>
@@ -52,7 +52,7 @@ export default function Contact() {
                   </span>
                   <span
                     aria-hidden="true"
-                    className="contact-tx hidden shrink-0 border border-white/70 px-2 py-1 font-mono text-[0.62rem] uppercase tracking-[0.2em] text-white sm:inline-block"
+                    className="contact-tx hidden shrink-0 border border-ink/70 px-2 py-1 font-mono text-[0.62rem] uppercase tracking-[0.2em] text-ink sm:inline-block"
                   >
                     TX ready
                   </span>

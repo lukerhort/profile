@@ -44,13 +44,13 @@
 .chip {
   display: inline-block;
   border: 1px solid rgb(255 255 255 / 0.14);
-  background: rgb(5 5 6 / 0.7);
+  background: rgb(6 5 4 / 0.7);
   padding: 0.28rem 0.55rem;
   font-family: var(--font-mono);
   font-size: 0.68rem;
   line-height: 1.2;
   letter-spacing: 0.04em;
-  color: rgb(242 242 243 / 0.82);
+  color: rgb(244 241 236 / 0.82);
   transition:
     border-color 0.3s,
     color 0.3s,
@@ -102,14 +102,14 @@
 }
 .contact-row:hover,
 .contact-row:focus-visible {
-  color: #fff;
+  color: var(--color-ink);
 }
 .contact-row:hover .contact-label,
 .contact-row:focus-visible .contact-label {
-  color: #fff;
+  color: var(--color-ink);
 }
 .contact-row:focus-visible {
-  outline-color: #fff;
+  outline-color: var(--color-ink);
   outline-offset: -5px;
 }
 .contact-tx {
@@ -137,7 +137,7 @@
 /* Without JavaScript nothing makes the header solid on scroll, so it keeps a
    blurred backdrop at all times rather than sitting bare over body text. */
 html:not(.js) .site-header {
-  background-color: rgb(5 5 6 / 0.85);
+  background-color: rgb(6 5 4 / 0.85);
   border-bottom-color: var(--color-line);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);

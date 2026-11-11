@@ -108,7 +108,7 @@ export default function Hero({ media, backdrop }: { media: HeroMedia; backdrop: 
       {/* Orbital traffic + tracked object (sit above any hero media) */}
       <div data-hero-orbit className="pointer-events-none absolute inset-0">
         <OrbitalTraffic />
-        <TrackReticle className="absolute left-[28%] top-[14%] w-[240px] md:left-auto md:right-[9%] md:top-[18%] md:w-[min(30vw,420px)]" />
+        <TrackReticle className="absolute left-[28%] top-[8%] w-[220px] md:left-auto md:right-[9%] md:top-[18%] md:w-[min(30vw,420px)]" />
       </div>
 
       {/* One-off acquisition sweep: started by JS (never shown without JS or with reduced motion) */}
@@ -143,11 +143,10 @@ export default function Hero({ media, backdrop }: { media: HeroMedia; backdrop: 
             style={{ "--hero-i": 3 } as React.CSSProperties}
             className="display mt-4 text-[1.4rem] font-medium leading-[1.1] tracking-[0.16em] text-fg/85 sm:text-2xl md:text-3xl lg:text-[2.15rem]"
           >
-            {/* "Electrical Engineer · Avionics Systems": two lines on phones, one line from sm up. */}
-            {site.title.split(" · ").map((part, i) => (
-              <span key={part}>
-                {i > 0 ? <span className="max-sm:sr-only"> · </span> : null}
-                <span className="whitespace-nowrap max-sm:block">{part}</span>
+            {/* "Electrical Engineer I, Systems": breaks after the comma when a phone is too narrow for one line. */}
+            {site.title.split(/(?<=,) /).map((part) => (
+              <span key={part} className="inline-block">
+                {part}&nbsp;
               </span>
             ))}
           </p>
@@ -167,7 +166,7 @@ export default function Hero({ media, backdrop }: { media: HeroMedia; backdrop: 
             className="btn-line btn-accent"
             data-testid="hero-cta-resume"
           >
-            Resume <span aria-hidden="true">↗</span>
+            Resume · {site.resumeDate} <span aria-hidden="true">↗</span>
           </a>
           <a href="#contact" className="btn-line" data-testid="hero-cta-contact">
             Contact

@@ -8,7 +8,6 @@ import About from "@/components/About";
 import Experience from "@/components/Experience";
 import Projects from "@/components/Projects";
 import Education from "@/components/Education";
-import Leadership from "@/components/Leadership";
 import Contact from "@/components/Contact";
 import SectionHud from "@/components/SectionHud";
 
@@ -45,7 +44,6 @@ export default function Home() {
         <Experience />
         <Projects />
         <Education />
-        <Leadership />
         <Contact />
       </main>
     </Motion>

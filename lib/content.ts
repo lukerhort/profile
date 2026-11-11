@@ -2,9 +2,8 @@
 
 export const site = {
   name: "Luke Horton",
-  /** Display descriptor used in the hero, footer and page title. */
-  title: "Electrical Engineer · Avionics Systems",
-  /** Official job title (About, Experience, structured data). */
+  /** Job title, shown under the name in the hero, in the footer and the page title. */
+  title: "Electrical Engineer I, Systems",
   officialTitle: "Electrical Engineer I, Systems",
   company: "True Anomaly",
   location: "Long Beach, California",
@@ -12,10 +11,12 @@ export const site = {
   url: "https://www.lukehorton.me",
   email: "lukerhorton4@gmail.com",
   resume: "/Luke-Horton-Resume.pdf",
+  /** The PDF is older than the site; say so wherever it is linked. */
+  resumeDate: "Aug 2026",
   gaId: "G-7JRD0V232N",
-  tagline: "System-level avionics design and integrated test for spacecraft.",
+  tagline: "Spacecraft data interfaces and integrated test.",
   description:
-    "Luke Horton is an Electrical Engineer I, Systems at True Anomaly, owning system-level avionics design and the avionics side of integrated test. B.S. Aerospace Engineering, San Diego State University (2026).",
+    "Luke Horton is an Electrical Engineer I, Systems at True Anomaly, working on spacecraft data interfaces, interface control documents and integrated test. B.S. Aerospace Engineering, San Diego State University (2026).",
   links: {
     linkedin: "https://www.linkedin.com/in/luke-r-horton",
     github: "https://github.com/lukerhort",
@@ -25,15 +26,15 @@ export const site = {
 export const about = {
   heading: "Systems first, down to the board.",
   paragraphs: [
-    "I'm an Electrical Engineer I, Systems at True Anomaly. I work on spacecraft avionics at the system level, design boards when the work calls for it, and am responsible for avionics during integrated system test on one of our product lines. My background spans aerospace engineering, systems engineering, avionics integration, performance analysis, and technical program execution.",
-    "Before this role I was a Program Manager Intern at True Anomaly. At San Diego State University I studied Aerospace Engineering and worked on aircraft performance, avionics, and systems engineering projects.",
-    "I'm most interested in spacecraft avionics, systems engineering, test, and mission-focused engineering work.",
+    "I'm an Electrical Engineer I, Systems at True Anomaly. I work on the data side of spacecraft electrical systems at the vehicle level: how the components talk to each other over RS-422, Ethernet and CAN, and what every input and output is used for.",
+    "I studied Aerospace Engineering at San Diego State University, where I led avionics on a ground-effect vehicle and performance analysis on a carrier fighter design. I started at True Anomaly as a Program Manager Intern in summer 2026 and moved into engineering that September.",
+    "On my own time I build ATLAS, an AI assistant that runs on my PC and my phone.",
   ],
   facts: [
     { label: "Current", value: "Electrical Engineer I, Systems · True Anomaly" },
     { label: "Based", value: "Long Beach, CA" },
     { label: "Education", value: "B.S. Aerospace Engineering, SDSU '26" },
-    { label: "Focus", value: "Spacecraft avionics · Systems · Test" },
+    { label: "Focus", value: "Data interfaces · ICDs · Integrated test" },
   ],
 };
 
@@ -54,7 +55,8 @@ export const experience: Role[] = [
     dates: "Sep 2026 – Present",
     location: "Long Beach, California",
     body: [
-      "I own system-level avionics design for two True Anomaly products, and the avionics side of integrated system testing for one product line. Most of my work is at the system level, but I design boards too, which is what I'm doing right now.",
+      "I'm responsible for the vehicle-level electrical design of two products, on the data side: RS-422, Ethernet and CAN. Other engineers own power, and we work with them closely. I also own the avionics side of an integrated test campaign.",
+      "Most of the work is block diagrams of the data interface architecture, I/O allocation for every component, and interface control documents (ICDs). I work from the ICDs of the components we buy and write them for the ones we build. I help with harnessing and test procedures, mostly in Altium.",
     ],
   },
   {
@@ -64,17 +66,8 @@ export const experience: Role[] = [
     dates: "Jun 2026 – Aug 2026",
     location: "Denver, Colorado",
     body: [
-      "Led an intern project across the company's active defense-space programs: a PMO and engineering template library supporting program-lifecycle execution and design reviews, with templates for major milestones and review gates (SRD, ICD, PDR/CDR/TRR, IBR, WBS) and entry/exit criteria benchmarked against DoD 5000, NASA SE, and INCOSE standards.",
-      "Designed and shipped an enterprise-shareable AI tool that auto-populates milestone review decks from a single program input, cutting processing cost ~94%. Worked cross-functionally with engineering, production/test, and software teams.",
-    ],
-  },
-  {
-    title: "Inside Sales Engineer Intern",
-    org: "DMG Corporation",
-    dates: "Sep 2025 – Apr 2026",
-    location: "San Diego, California",
-    body: [
-      "Provided operational support to outside sales engineers: generating quotes, securing vendor pricing, processing sales orders and POs, coordinating with manufacturers, and managing customer status communications.",
+      "Built a library of program and engineering templates for the company's defense-space programs: milestone reviews and documents (SRD, ICD, PDR/CDR/TRR, IBR, WBS), with entry and exit criteria checked against DoD 5000, NASA and INCOSE standards.",
+      "Built an AI tool that fills in milestone review decks from one program input. It cut processing cost by about 94%.",
     ],
   },
   {
@@ -83,7 +76,7 @@ export const experience: Role[] = [
     dates: "Fall 2023 – Fall 2024",
     location: "San Diego, California",
     body: [
-      "Performed structural analysis and iterative testing on rocket launch lugs, refined SolidWorks CAD and drawings for manufacturability and subsystem integration, and collaborated in cross-team design reviews to meet structural and schedule constraints.",
+      "Ran structural analysis and testing on rocket launch lugs, and updated SolidWorks CAD and drawings so the parts could be made and fitted.",
     ],
   },
 ];
@@ -96,8 +89,8 @@ export type ProjectImage = {
   width: number;
   height: number;
   fit?: "contain";
-  /** With fit "contain": a smaller margin around the image inside the frame. */
-  pad?: "tight";
+  /** With fit "contain": the margin around the image inside the frame (default is a wide one). */
+  pad?: "tight" | "none";
   /** Presentational: a mostly-white image that is dimmed slightly to sit on the dark page. */
   tone?: "light";
 };
@@ -107,11 +100,12 @@ export type Project = {
   subtitle: string;
   tag: string;
   role: string;
-  status: "Complete" | "In Progress";
+  status: "Complete" | "In Progress" | "Paused";
   summary: string;
   details: string[];
   stats: string[];
-  href: string;
+  /** Project website, if there is one. */
+  href?: string;
   /** Source code repository, shown as a second link next to the project site. */
   repo?: string;
   /** Primary image (first in the gallery). */
@@ -122,45 +116,36 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    name: "Aleborne",
-    subtitle: "F-44 Strike Fighter",
-    tag: "AE 460A/B · AIAA Capstone",
-    role: "Performance Lead & Systems Engineer",
-    status: "Complete",
+    name: "ATLAS",
+    subtitle: "AI Assistant",
+    tag: "Personal Project · 2026",
+    role: "Solo build",
+    status: "In Progress",
     summary:
-      "A carrier-based strike fighter designed for the AIAA Navy RFP: a seven-person SDSU team's take on an F/A-18E/F Super Hornet replacement.",
+      "An AI assistant that runs on my PC and my phone. I give it a goal. It plans the work, hands tasks to AI agents, checks the results, and asks me before it does anything risky.",
     details: [
-      "Led performance and test-planning analysis: translated mission and carrier requirements into verification metrics, owned weight estimation, wing sizing, and takeoff/landing analyses, and built physics-based MATLAB sizing models (drag polar, T/W–W/S trades, constraint sets), delivering technical memos at PDR and CDR.",
-      "Ran structured parametric sweeps and sensitivity checks to quantify carrier-suitability margins, then refined and locked the configuration for CDR based on integrated subsystem feedback.",
+      "One Node.js process runs it all. An orchestrator turns a goal into a task graph, runs agents in parallel on Claude, GPT, Grok and Gemini, reviews what comes back and replans. State is kept in SQLite, so work survives a restart.",
+      "The phone app is Expo and React Native. It shows my day, the missions that are running, and anything that needs my approval. Shell commands and emails wait for a yes.",
     ],
-    stats: ["M 1.84 dash", "+7.5g", "63,464 lb MTOW"],
-    href: "https://lukerhort.github.io/aleborne/",
+    stats: ["TypeScript · Node.js", "SQLite", "Expo · React Native"],
     image: {
-      src: "/images/aleborne.webp",
-      tone: "light",
-      alt: "Aleborne F-44 final CAD render, seen from above",
-      caption: "Final CAD render",
-      width: 1248,
-      height: 1090,
+      src: "/images/atlas-architecture.webp",
+      alt: "ATLAS block diagram: a phone app sends goals to a server on a PC that holds a chief agent, an orchestrator, model providers, tools and a SQLite database",
+      caption: "System block diagram",
+      width: 1400,
+      height: 1050,
+      fit: "contain",
+      pad: "none",
     },
     gallery: [
       {
-        src: "/images/aleborne-layout.webp",
-        tone: "light",
-        alt: "Aleborne wireframe CAD view from above, with internal components visible through the outer skin",
-        caption: "Wireframe CAD view",
-        width: 1000,
-        height: 624,
-      },
-      {
-        src: "/images/aleborne-profile.webp",
-        tone: "light",
-        alt: "Aleborne side profile render with landing gear down",
-        caption: "Side profile, gear down",
-        width: 1000,
-        height: 617,
+        src: "/images/atlas-mission.webp",
+        alt: "ATLAS mission flow: goal, plan, task graph, parallel agents, review, then approval on the phone before any outside action",
+        caption: "How a goal runs",
+        width: 1400,
+        height: 1050,
         fit: "contain",
-        pad: "tight",
+        pad: "none",
       },
     ],
   },
@@ -171,10 +156,10 @@ export const projects: Project[] = [
     role: "Project Manager · Avionics Lead & Pilot",
     status: "Complete",
     summary:
-      "An RC-scale wing-in-ground-effect vehicle designed, built, and flown in a single semester by four SDSU seniors.",
+      "An RC-scale wing-in-ground-effect vehicle. Four SDSU seniors designed it, built it and flew it in one semester.",
     details: [
-      "Led a four-person design-build-fly team, owning schedule and scope to hit a single-semester timeline.",
-      "Led all avionics and flight software: configured a Pixhawk 6C on ArduPlane with an ExpressLRS link, mapped seven control surfaces across FMU PWM channels, and tuned fly-by-wire flight modes through iterative flight testing to a successful ground-effect run at 42.7 mph.",
+      "I led the four-person team and owned the schedule.",
+      "I did all the avionics: a Pixhawk 6C on ArduPlane with an ExpressLRS link, seven control surfaces on six PWM channels, and battery monitoring with voltage and current failsafes. I tuned the fly-by-wire modes in flight test until it ran in ground effect at 42.7 mph.",
     ],
     stats: ["Flew @ 42.7 mph", "20 lb airframe", "Pixhawk 6C"],
     href: "https://www.barrelborne.co/",
@@ -210,18 +195,61 @@ export const projects: Project[] = [
     ],
   },
   {
+    name: "Aleborne",
+    subtitle: "F-44 Strike Fighter",
+    tag: "AE 460A/B · AIAA Capstone",
+    role: "Performance Lead & Systems Engineer",
+    status: "Complete",
+    summary:
+      "A carrier-based strike fighter designed for the AIAA Navy RFP. Seven SDSU students, one replacement for the F/A-18E/F Super Hornet.",
+    details: [
+      "I led performance and test planning. I turned the mission and carrier requirements into verification metrics, owned weight estimation, wing sizing and takeoff and landing analysis, and built the MATLAB sizing models. I wrote the technical memos for PDR and CDR.",
+      "I ran parametric sweeps to find our carrier-suitability margins, then locked the configuration for CDR.",
+    ],
+    stats: ["M 1.84 dash", "+7.5g", "63,464 lb MTOW"],
+    href: "https://lukerhort.github.io/aleborne/",
+    image: {
+      src: "/images/aleborne.webp",
+      tone: "light",
+      alt: "Aleborne F-44 final CAD render, seen from above",
+      caption: "Final CAD render",
+      width: 1248,
+      height: 1090,
+    },
+    gallery: [
+      {
+        src: "/images/aleborne-layout.webp",
+        tone: "light",
+        alt: "Aleborne wireframe CAD view from above, with internal components visible through the outer skin",
+        caption: "Wireframe CAD view",
+        width: 1000,
+        height: 624,
+      },
+      {
+        src: "/images/aleborne-profile.webp",
+        tone: "light",
+        alt: "Aleborne side profile render with landing gear down",
+        caption: "Side profile, gear down",
+        width: 1000,
+        height: 617,
+        fit: "contain",
+        pad: "tight",
+      },
+    ],
+  },
+  {
     name: "Daedalus",
     subtitle: "Flight Computer",
     tag: "Personal Project · 2026",
-    role: "Solo: Firmware, Hardware & Test",
-    status: "In Progress",
+    role: "Solo: Firmware & Test",
+    status: "Paused",
     summary:
-      "A high-power rocketry flight computer built from scratch and validated by a full software- and hardware-in-the-loop test pipeline.",
+      "A flight computer for a high-power rocket, on a Teensy 4.1. It is paused at sensor bring-up and has not flown.",
     details: [
-      "C++17 firmware on a Teensy 4.1 with IMU, barometer, and GPS, a complementary-filter state machine, MOSFET pyro outputs, and 100 Hz SD logging, alongside a SITL/HITL test pipeline with a 50+ scenario pytest suite in GitHub Actions CI and automated fault injection.",
-      "Earned Level 1 high-power rocketry certification and validated apogee and flight data against a commercial reference altimeter.",
+      "All the flight logic sits behind a hardware abstraction layer. The same state machine and estimator compile for the Teensy and for a desktop simulator.",
+      "The simulator is fed OpenRocket trajectories. Its tests run in GitHub Actions on every commit.",
     ],
-    stats: ["Teensy 4.1", "50+ CI tests", "L1 certified"],
+    stats: ["Teensy 4.1", "C++17", "SITL tests in CI"],
     href: "https://lukerhort.github.io/daedalus-site/",
     repo: "https://github.com/lukerhort/daedalus",
     image: {
@@ -257,52 +285,28 @@ export const education = {
     "Aircraft Stability & Control",
     "Programming & Numerical Methods",
   ],
-  certifications: ["Level 1 High-Power Rocketry (HPR)"],
+  /** Short context lines: roles outside the space industry. */
+  also: ["President, Kappa Alpha Order (2024)", "Inside Sales Engineer Intern, DMG Corporation (2025 – 2026)"],
 };
 
 export const skills: { group: string; items: string[] }[] = [
   {
-    group: "Avionics & Embedded",
-    items: ["Pixhawk 6C", "ArduPilot", "Mission Planner", "MAVLink", "Teensy 4.1", "C++17 / PlatformIO", "IMU / Baro / GPS", "ELRS / SiK Telemetry"],
+    group: "Electrical Systems",
+    items: ["RS-422", "Ethernet", "CAN", "Interface Control Documents", "I/O Allocation", "Block Diagrams", "Harnessing", "Test Procedures"],
   },
   {
-    group: "Test, Simulation & Programming",
-    items: ["SITL / HITL", "Fault Injection", "pytest", "GitHub Actions (CI)", "Python", "C / C++", "MATLAB", "Simulink", "ANSYS", "Linux / SSH", "Git"],
+    group: "Design & PLM Tools",
+    items: ["Altium Designer", "Visio", "Excel", "Siemens NX", "Teamcenter", "Jira", "Confluence", "Duro"],
   },
   {
-    group: "PMO & PLM Tools",
-    items: ["Jira", "Confluence", "Duro", "Teamcenter", "Power BI"],
+    group: "Embedded & Software",
+    items: ["Pixhawk 6C", "ArduPilot", "MAVLink", "Teensy 4.1", "C++17 / PlatformIO", "Python", "TypeScript / Node.js", "pytest", "GitHub Actions (CI)", "MATLAB", "Git"],
   },
   {
     group: "CAD & Fabrication",
-    items: ["SolidWorks", "GD&T", "Design for Manufacturability", "3D Printing", "MIG / TIG Welding", "Machining", "Soldering & Electronics"],
+    items: ["SolidWorks", "GD&T", "3D Printing", "MIG / TIG Welding", "Machining", "Soldering"],
   },
 ];
-
-export const leadership = {
-  stats: [
-    { value: "170+", label: "Members led" },
-    { value: "$200K+", label: "Annual budget" },
-  ],
-  items: [
-    {
-      title: "President, Kappa Alpha Order",
-      meta: "2024 · IFC Most Improved Chapter",
-      body: "Led the chapter and managed its annual budget, directing an executive board and 20+ chairs. Drove gains in membership and engagement, earning recognition as IFC Most Improved Chapter (2024).",
-    },
-    {
-      title: "President, San Diego Sales Engineers",
-      // Non-breaking spaces keep the date range on one line.
-      meta: "National Society of Sales Engineers · SDSU · Fall 2025 – Spring 2026",
-      body: "Led chapter operations, planning networking sessions and technical workshops on sales engineering, and represented SDSU at the National Sales Engineering Conference (NSEC) in 2024 and 2025.",
-    },
-    {
-      title: "Fabrication & Personal Projects",
-      meta: "Welding · Modular Stage Design",
-      body: "Co-led the design and fabrication of a custom 800-lb steel stage for charity events using welding and SolidWorks. Separately designed and built a 700 ft² modular stage system emphasizing repeatable assembly and interchangeable modules.",
-    },
-  ],
-};
 
 export const nav = [
   { href: "#about", label: "About" },

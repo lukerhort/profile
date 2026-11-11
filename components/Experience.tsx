@@ -15,7 +15,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
 /**
  * Experience timeline. On large screens with motion allowed, the section pins
  * and scrolling advances through roles one at a time (masked slide, progress
- * rail with a crimson tick, a ghost index numeral, and the role title decoding
+ * rail with a orange tick, a ghost index numeral, and the role title decoding
  * from glyphs). On mobile each title decodes once as its card reveals. With
  * reduced motion it is a plain stacked list.
  */

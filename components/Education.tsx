@@ -25,9 +25,9 @@ export default function Education() {
             </ul>
           </div>
           <div className="lg:col-span-2 lg:col-start-11" data-reveal>
-            <p className="eyebrow text-accent">Certifications</p>
-            <ul className="mt-5 space-y-2.5 text-fg/75">
-              {education.certifications.map((c) => (
+            <p className="eyebrow text-accent">Also</p>
+            <ul className="mt-5 space-y-2.5 text-sm text-fg/75">
+              {education.also.map((c) => (
                 <li key={c}>{c}</li>
               ))}
             </ul>

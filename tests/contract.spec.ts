@@ -19,11 +19,11 @@ test.describe("contract with site-improvements (expected-pending)", () => {
     }
   });
 
-  test("projects: exactly 3 cards, each with 2+ images", async ({ page }) => {
+  test("projects: exactly 4 cards, each with 2+ images", async ({ page }) => {
     await page.goto("/");
     const cards = page.locator('#projects [data-testid="project-card"]');
-    await expect(cards).toHaveCount(3);
-    for (let i = 0; i < 3; i++) {
+    await expect(cards).toHaveCount(4);
+    for (let i = 0; i < 4; i++) {
       expect(await cards.nth(i).locator("img").count(), `card ${i}`).toBeGreaterThanOrEqual(2);
     }
   });

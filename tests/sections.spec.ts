@@ -1,8 +1,8 @@
 import type { Page } from "@playwright/test";
 import { test, expect, scrollThrough, waitForReady } from "./fixtures";
-import { site, skills, leadership } from "../lib/content";
+import { site, skills, projects, experience } from "../lib/content";
 
-const NUMBERED = ["about", "experience", "projects", "education", "leadership", "contact"];
+const NUMBERED = ["about", "experience", "projects", "education", "contact"];
 /** Scroll effects are only live once Motion has run; scrolling before then is not what a visitor does. */
 const motionReady = (page: Page) => page.waitForFunction(() => document.documentElement.classList.contains("motion-ready"));
 const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&");
@@ -46,7 +46,7 @@ test.describe("contact", () => {
     expect(m.lines, "address on a single line").toBe(1);
   });
 
-  test("hovering a row wipes in the crimson fill and shows TX READY", async ({ page }, info) => {
+  test("hovering a row wipes in the accent fill and shows TX READY", async ({ page }, info) => {
     test.skip(info.project.name !== "desktop", "hover is a desktop interaction");
     await page.goto("/");
     await waitForReady(page);
@@ -81,49 +81,20 @@ test.describe("section numbering", () => {
     }
   });
 
-  test("section eyebrow numbers run 01..06 in page order", async ({ page }) => {
+  test("section eyebrow numbers run 01..05 in page order", async ({ page }) => {
     await page.goto("/");
     const nums = await page.evaluate(
       (ids) => ids.map((i) => document.querySelector(`section#${i} .eyebrow .text-accent`)!.textContent!.trim()),
       NUMBERED,
     );
-    expect(nums).toEqual(["01", "02", "03", "04", "05", "06"]);
-  });
-});
-
-test.describe("leadership stats", () => {
-  const finals = leadership.stats.map((s) => s.value);
-  const read = (page: Page) =>
-    page.locator("#leadership dl dd").evaluateAll((els) => els.map((e) => (e.textContent ?? "").trim()));
-
-  test("count up and settle on the exact final values", async ({ page }) => {
-    await page.goto("/");
-    await waitForReady(page);
-    await motionReady(page);
-    await page.evaluate(() => {
-      const el = document.getElementById("leadership")!;
-      window.scrollTo(0, el.getBoundingClientRect().top + window.scrollY);
-    });
-    await expect.poll(() => read(page), { timeout: 8_000 }).toEqual(finals);
-    const widths = () => page.locator("#leadership dl dd").evaluateAll((els) => els.map((e) => e.getBoundingClientRect().width));
-    const before = await widths();
-    await page.waitForTimeout(300);
-    expect(await widths()).toEqual(before);
-  });
-
-  test.describe("JavaScript disabled", () => {
-    test.use({ javaScriptEnabled: false });
-    test("shows the exact final values", async ({ page }) => {
-      await page.goto("/");
-      expect(await read(page)).toEqual(finals);
-    });
+    expect(nums).toEqual(["01", "02", "03", "04", "05"]);
   });
 });
 
 test.describe("skills schematic", () => {
   const total = skills.reduce((n, g) => n + g.items.length, 0);
   const offsets = (page: Page) =>
-    page.locator("#education [data-trace]").evaluateAll((els) => els.map((e) => parseFloat(getComputedStyle(e).strokeDashoffset)));
+    page.locator("#education [data-drop]").evaluateAll((els) => els.map((e) => parseFloat(getComputedStyle(e).strokeDashoffset)));
 
   test("every skill is rendered and visible", async ({ page }) => {
     await page.goto("/");
@@ -263,7 +234,6 @@ test.describe("keyboard", () => {
   // so below-the-fold controls (gallery thumbnails, contact rows) are unreachable by keyboard
   // until revealed by mouse/wheel. Remove test.fail() once Motion reveals on focus.
   test("Tab reaches project gallery thumbnails with a visible focus outline", async ({ page }) => {
-    test.fail(true, "reveal wrappers are visibility:hidden until scrolled into view, so Tab skips them");
     await page.goto("/");
     await waitForReady(page);
     await page.waitForTimeout(1600);
@@ -272,5 +242,63 @@ test.describe("keyboard", () => {
     expect(seen.size, "gallery thumbnails reached by Tab").toBe(count);
     const noOutline = [...seen].filter(([, v]) => v.style === "none" || v.width < 1);
     expect(noOutline, "focused without a visible outline").toEqual([]);
+  });
+});
+
+test.describe("content", () => {
+  test("the hero is the name, the job title and nothing inflated", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator("h1")).toHaveText(/Luke\s*Horton/i);
+    await expect(page.locator("#top")).toContainText(site.title);
+    await expect(page.locator("#top")).toContainText(site.tagline);
+  });
+
+  test("the current role names the real work: interfaces, ICDs, I/O allocation, Altium", async ({ page }) => {
+    await page.goto("/");
+    const text = experience[0].body.join(" ");
+    for (const word of ["RS-422", "Ethernet", "CAN", "interface control documents", "I/O allocation", "block diagrams", "Altium"]) {
+      expect(text, word).toContain(word);
+    }
+    await expect(page.locator("#experience")).toContainText("RS-422, Ethernet and CAN", { useInnerText: false });
+  });
+
+  test("ATLAS leads the projects; Daedalus is paused and does not claim a flight", async ({ page }) => {
+    await page.goto("/");
+    const cards = page.locator('#projects [data-testid="project-card"]');
+    await expect(cards.first().locator("h3")).toHaveText(/atlas/i);
+    const daedalus = cards.filter({ hasText: /daedalus/i });
+    await expect(daedalus).toContainText(/status:\s*paused/i);
+    await expect(daedalus).toContainText("has not flown");
+    const d = projects.find((p) => p.name === "Daedalus")!;
+    const copy = [d.summary, ...d.details, ...d.stats].join(" ");
+    expect(copy).not.toMatch(/L1|Level 1|certif|50\+|apogee|hardware-in-the-loop|HITL/i);
+    const page_text = await page.locator("body").innerText();
+    expect(page_text).not.toMatch(/Level 1|L1 certified/i);
+  });
+
+  test("a project without a website shows no dead link", async ({ page }) => {
+    await page.goto("/");
+    const atlas = page.locator('#projects [data-testid="project-card"]').first();
+    await expect(atlas.getByRole("link")).toHaveCount(0);
+  });
+
+  test("non-space roles are one short list, and the Leadership section is gone", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator("#leadership")).toHaveCount(0);
+    for (const id of ["top", "about", "experience", "projects", "contact"]) {
+      await expect(page.locator(`#${id}`)).not.toContainText(/Kappa Alpha|DMG/);
+    }
+    await expect(page.locator("#education")).toContainText("Kappa Alpha Order");
+  });
+
+  test("every resume link says how old the PDF is", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator('[data-testid="hero-cta-resume"]')).toContainText(site.resumeDate);
+    await expect(page.locator(`#contact a[href="${site.resume}"]`)).toContainText(site.resumeDate);
+  });
+
+  test("the program name is not on the page", async ({ page }) => {
+    await page.goto("/");
+    expect(await page.content()).not.toMatch(/\bSBI\b|interceptor/i);
   });
 });

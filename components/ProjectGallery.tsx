@@ -14,6 +14,7 @@ const pad = (n: number) => String(n).padStart(2, "0");
 
 function fitClass(img: ProjectImage) {
   if (img.fit !== "contain") return "object-cover";
+  if (img.pad === "none") return "object-contain";
   return img.pad === "tight" ? "object-contain p-[5%]" : "object-contain p-[12%]";
 }
 
@@ -24,7 +25,7 @@ function fitClass(img: ProjectImage) {
  * HTML, so nothing shifts when switching and the first image still shows if
  * JavaScript never runs.
  *
- * With motion allowed, the frame starts as a dark crimson duotone; when it
+ * With motion allowed, the frame starts as a dark orange duotone; when it
  * reaches the middle of the viewport a scan line wipes down it, restoring
  * full colour behind the line. The duotone is
  * only applied under `html.motion-ready` (see globals.css), so no-JS, a failed
@@ -91,7 +92,7 @@ export default function ProjectGallery({
         <span aria-hidden="true">·</span>
         <span className="inline-flex items-center gap-2">
           <span
-            className={`h-1.5 w-1.5 rounded-full ${project.status === "Complete" ? "bg-emerald-400" : "bg-amber-400"}`}
+            className={`h-1.5 w-1.5 rounded-full ${project.status === "Complete" ? "bg-emerald-400" : project.status === "Paused" ? "bg-fg/40" : "bg-amber-400"}`}
             aria-hidden="true"
           />
           Status: {project.status}

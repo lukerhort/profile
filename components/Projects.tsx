@@ -60,9 +60,11 @@ export default function Projects() {
                 </div>
               </details>
               <div className="mt-8 flex flex-wrap gap-3" data-reveal>
-                <a href={p.href} target="_blank" rel="noopener" className="btn-line">
-                  Visit project site <span aria-hidden="true">→</span>
-                </a>
+                {p.href ? (
+                  <a href={p.href} target="_blank" rel="noopener" className="btn-line">
+                    Visit project site <span aria-hidden="true">→</span>
+                  </a>
+                ) : null}
                 {p.repo ? (
                   <a href={p.repo} target="_blank" rel="noopener" className="btn-line">
                     View firmware on GitHub <span aria-hidden="true">↗</span>
