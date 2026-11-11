@@ -6,7 +6,9 @@ import Brackets from "./Brackets";
 
 export default function About() {
   return (
-    <section id="about" className="relative overflow-hidden py-28 md:py-44">
+    // overflow-x-clip (not hidden): the portrait column is sticky on lg+, and
+    // overflow hidden would make the section its scroll container.
+    <section id="about" className="relative overflow-x-clip py-28 md:py-44">
       <div className="container-x grid gap-16 lg:grid-cols-12 lg:gap-12">
         <div className="lg:col-span-7" data-reveal-group>
           <SectionHeading index="01" label="About" title={about.heading} />
@@ -28,7 +30,7 @@ export default function About() {
           </dl>
         </div>
 
-        <div className="relative lg:col-span-4 lg:col-start-9" data-reveal>
+        <div className="relative lg:sticky lg:top-28 lg:col-span-4 lg:col-start-9 lg:self-start" data-reveal>
           <div
             data-orbit-spin="30"
             className="pointer-events-none absolute left-1/2 top-[42%] -z-0 w-[170%] -translate-x-1/2 -translate-y-1/2"

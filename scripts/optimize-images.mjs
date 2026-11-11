@@ -20,7 +20,6 @@ const jobs = [
   { src: "AlebornePlane.png", out: "aleborne.webp", width: MAIN, quality: 80 },
   { src: "Aleborne5.png", out: "aleborne-layout.webp", width: GALLERY, quality: 80 },
   { src: "Aleborne2.png", out: "aleborne-profile.webp", width: GALLERY, quality: 80 },
-  { src: "Aleborne4.png", out: "aleborne-bay.webp", width: GALLERY, quality: 80 },
 
   // Barrelborne
   { src: "DesignDay2.jpg", out: "barrelborne.webp", width: 1200, quality: 62 },

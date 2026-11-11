@@ -36,8 +36,9 @@ export default function Experience() {
 
       mm.add("(min-width: 1024px) and (prefers-reduced-motion: no-preference)", () => {
         section.classList.add("exp-pinned");
-        gsap.set(cards, { autoAlpha: 0 });
-        gsap.set(cards[0], { autoAlpha: 1, y: 0 });
+        // Opacity, not autoAlpha: inactive roles stay in the accessibility tree.
+        gsap.set(cards, { opacity: 0, pointerEvents: "none" });
+        gsap.set(cards[0], { opacity: 1, y: 0, pointerEvents: "auto" });
 
         const HOLD = 0.5;
         const FADE = 0.5;
@@ -57,6 +58,7 @@ export default function Experience() {
           if (idx === current) return;
           current = idx;
           railItems.forEach((el, i) => el.classList.toggle("is-active", i === idx));
+          cards.forEach((c, i) => (c.style.pointerEvents = i === idx ? "auto" : "none"));
           if (counter) counter.textContent = pad(idx + 1);
           gsap.to(tick, { y: tickY(idx), duration: 0.45, ease: "expo.out", overwrite: true });
           ghost.dataset.n = pad(idx + 1);
@@ -87,10 +89,10 @@ export default function Experience() {
         // enters from below, offset by the full stage height so the two never
         // overlap, even if scrolling stops mid-transition.
         starts.forEach((s, i) => {
-          tl.to(cards[i], { y: () => -shift(), autoAlpha: 0, duration: FADE }, s).fromTo(
+          tl.to(cards[i], { y: () => -shift(), opacity: 0, duration: FADE }, s).fromTo(
             cards[i + 1],
-            { y: () => shift(), autoAlpha: 0 },
-            { y: 0, autoAlpha: 1, duration: FADE },
+            { y: () => shift(), opacity: 0 },
+            { y: 0, opacity: 1, duration: FADE },
             s,
           );
         });
@@ -99,6 +101,7 @@ export default function Experience() {
 
         return () => {
           section.classList.remove("exp-pinned");
+          cards.forEach((c) => (c.style.pointerEvents = ""));
           railItems.forEach((el) => el.classList.remove("is-active"));
           titles.forEach(settle);
           ghost.dataset.n = "01";
@@ -109,9 +112,9 @@ export default function Experience() {
         cards.forEach((card, i) =>
           gsap.fromTo(
             card,
-            { autoAlpha: 0, y: 48 },
+            { opacity: 0, y: 48 },
             {
-              autoAlpha: 1,
+              opacity: 1,
               y: 0,
               duration: 1,
               ease: "expo.out",
@@ -130,7 +133,7 @@ export default function Experience() {
     <section
       ref={root}
       id="experience"
-      className="relative border-t border-line bg-ink py-28 lg:flex lg:h-svh lg:items-center lg:py-0"
+      className="relative border-t border-line bg-ink py-28 lg:py-36"
     >
       {/* Ghost index numeral behind the active role (pinned mode only; drawn via CSS content). */}
       <div className="exp-ghost pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
@@ -141,13 +144,13 @@ export default function Experience() {
         {/* Left: heading, counter, progress rail */}
         <div className="lg:col-span-4">
           <SectionHeading index="02" label="Experience" title="Where I work" reveal={false} />
-          <div className="mt-10 hidden items-end gap-3 lg:flex" aria-hidden="true">
+          <div className="exp-counter mt-10 items-end gap-3" aria-hidden="true">
             <span data-exp-counter className="display text-7xl text-fg">
               01
             </span>
             <span className="display pb-2 text-2xl text-muted">/ {pad(n)}</span>
           </div>
-          <ol className="relative mt-10 hidden border-l border-line lg:block" aria-hidden="true">
+          <ol className="exp-rail relative mt-10 border-l border-line" aria-hidden="true">
             <span data-exp-fill className="absolute -left-px top-0 h-full w-px origin-top bg-accent" />
             <span data-exp-tick className="exp-tick" />
             {experience.map((r) => (
@@ -164,12 +167,12 @@ export default function Experience() {
         </div>
 
         {/* Right: role cards */}
-        <div className="exp-stage space-y-16 lg:col-span-7 lg:col-start-6 lg:space-y-0 lg:self-center">
+        <div className="exp-stage space-y-16 lg:col-span-7 lg:col-start-6">
           {experience.map((r, i) => (
             <article
               key={r.title + r.dates}
               data-exp-card
-              className="border-l border-line pl-6 lg:self-center lg:border-0 lg:pl-0"
+              className="border-l border-line pl-6"
             >
               <p className="eyebrow flex flex-wrap items-center gap-x-4 gap-y-1">
                 <span className="text-accent">{pad(i + 1)}</span>

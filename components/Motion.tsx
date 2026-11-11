@@ -49,23 +49,34 @@ export default function Motion({ children }: { children: React.ReactNode }) {
   return <div ref={root}>{children}</div>;
 }
 
+/** The page's Lenis instance while smooth scrolling is active (null otherwise). */
+let activeLenis: Lenis | null = null;
+export const getLenis = () => activeLenis;
+
 function setUpMotion() {
   const lenis = new Lenis({ autoRaf: false, anchors: true });
+  activeLenis = lenis;
   lenis.on("scroll", ScrollTrigger.update);
   const raf = (time: number) => lenis.raf(time * 1000);
   gsap.ticker.add(raf);
   gsap.ticker.lagSmoothing(0);
 
+  // Reveals animate opacity (not autoAlpha/visibility) so hidden-but-pending
+  // content stays in the tab order and the accessibility tree. Each tween is
+  // keyed by the element that owns it so focus can complete it early.
+  const reveals = new Map<Element, gsap.core.Tween>();
+
   // Staggered reveals, grouped so siblings cascade together.
   const grouped = new Set<Element>();
   gsap.utils.toArray<HTMLElement>("[data-reveal-group]").forEach((group) => {
     const items = group.querySelectorAll<HTMLElement>("[data-reveal]");
+    if (!items.length) return;
     items.forEach((el) => grouped.add(el));
-    gsap.fromTo(
+    const tween = gsap.fromTo(
       items,
-      { autoAlpha: 0, y: 48 },
+      { opacity: 0, y: 48 },
       {
-        autoAlpha: 1,
+        opacity: 1,
         y: 0,
         duration: 1.1,
         ease: "expo.out",
@@ -73,21 +84,38 @@ function setUpMotion() {
         scrollTrigger: { trigger: group, start: "top 82%", once: true },
       },
     );
+    reveals.set(group, tween);
   });
   gsap.utils.toArray<HTMLElement>("[data-reveal]").forEach((el) => {
     if (grouped.has(el)) return;
-    gsap.fromTo(
+    const tween = gsap.fromTo(
       el,
-      { autoAlpha: 0, y: 48 },
+      { opacity: 0, y: 48 },
       {
-        autoAlpha: 1,
+        opacity: 1,
         y: 0,
         duration: 1.1,
         ease: "expo.out",
         scrollTrigger: { trigger: el, start: "top 85%", once: true },
       },
     );
+    reveals.set(el, tween);
   });
+
+  // Keyboard focus landing inside content that has not revealed yet (Tab
+  // moves faster than scroll triggers fire) finishes that reveal at once, so
+  // the focused element is never transparent or offset.
+  const onFocusIn = (e: FocusEvent) => {
+    const target = e.target as Element | null;
+    if (!target) return;
+    reveals.forEach((tween, owner) => {
+      if (!owner.contains(target)) return;
+      tween.scrollTrigger?.kill(false, true);
+      tween.progress(1);
+      reveals.delete(owner);
+    });
+  };
+  document.addEventListener("focusin", onFocusIn);
 
   gsap.utils.toArray<HTMLElement>("[data-parallax]").forEach((el) => {
     const amount = parseFloat(el.dataset.parallax || "0.15");
@@ -134,7 +162,10 @@ function setUpMotion() {
 
   return () => {
     document.removeEventListener("toggle", onToggle, true);
+    document.removeEventListener("focusin", onFocusIn);
     gsap.ticker.remove(raf);
+    gsap.ticker.lagSmoothing(500, 33); // GSAP's default
     lenis.destroy();
+    activeLenis = null;
   };
 }

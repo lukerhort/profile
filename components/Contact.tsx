@@ -11,11 +11,14 @@ export default function Contact() {
 
   return (
     <section id="contact" className="relative overflow-hidden border-t border-line pb-16 pt-28 md:pt-44">
-      <div
-        data-orbit-spin="40"
-        className="pointer-events-none absolute right-[-35%] top-10 w-[150%] md:right-[-12%] md:top-16 md:w-[70%]"
-      >
-        <OrbitRings className="h-auto w-full" boost={1.45} />
+      {/* The orbit runs off the right edge on purpose; a soft fade there makes the crop read as intentional. */}
+      <div className="contact-orbit-mask pointer-events-none absolute inset-0" aria-hidden="true">
+        <div
+          data-orbit-spin="40"
+          className="absolute right-[-35%] top-10 w-[150%] md:right-[-12%] md:top-16 md:w-[70%]"
+        >
+          <OrbitRings className="h-auto w-full" boost={1.45} />
+        </div>
       </div>
       <div className="container-x relative" data-reveal-group>
         <p className="eyebrow flex items-center gap-4" data-reveal>

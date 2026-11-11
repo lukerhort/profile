@@ -121,9 +121,11 @@
      JavaScript disabled, `js` is never set and nothing is hidden.
    - prefers-reduced-motion: none of this applies; everything is static. */
 @media (prefers-reduced-motion: no-preference) {
+  /* Name, title and buttons paint at once with a short, subtle rise; the
+     effects (lock-on, scan) follow later. */
   [data-hero-in] {
-    animation: hero-in 1.4s var(--ease-out-expo) both;
-    animation-delay: calc(0.15s + var(--hero-i, 0) * 0.12s);
+    animation: hero-in 0.4s var(--ease-out-expo) both;
+    animation-delay: calc(var(--hero-i, 0) * 0.025s);
   }
   [data-hero-orbit] {
     animation: hero-fade 2.2s ease-out 0.4s both;
@@ -135,8 +137,8 @@
 
 @keyframes hero-in {
   from {
-    opacity: 0;
-    transform: translateY(60%);
+    opacity: 0.4;
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -151,26 +153,49 @@
     opacity: 1;
   }
 }
+/* Opacity only: pending content stays focusable and in the accessibility tree. */
 @keyframes reveal-failsafe {
   from {
     opacity: 0;
-    visibility: hidden;
   }
   to {
     opacity: 1;
-    visibility: visible;
   }
 }
 
-/* Pinned experience stage: roles overlap in one grid cell and are cross-faded
-   by GSAP. Only applied when JS enables the pin (desktop + motion allowed). */
+/* Pinned experience stage: a full-height section whose roles overlap in one
+   grid cell and are cross-faded by GSAP. `exp-pinned` is only added by JS
+   while the pin is actually active (desktop + motion allowed); without it
+   (no JS, reduced motion, mobile) the section is auto height and the roles
+   stack. Unlayered, so it wins over the section's padding/spacing utilities. */
+.exp-pinned {
+  display: flex;
+  height: 100svh;
+  align-items: center;
+  padding-block: 0;
+}
 .exp-pinned .exp-stage {
   display: grid;
   overflow: hidden;
   padding-block: 0.5rem;
+  align-self: center;
 }
 .exp-pinned .exp-stage > * {
   grid-area: 1 / 1;
+  margin-block: 0;
+  border-left-width: 0;
+  padding-left: 0;
+  align-self: center;
+}
+.exp-counter,
+.exp-rail {
+  display: none;
+}
+.exp-pinned .exp-counter {
+  display: flex;
+}
+.exp-pinned .exp-rail {
+  display: block;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -285,19 +310,21 @@
   .trk-breathe {
     animation: lock 4s ease-in-out 2.6s infinite;
   }
-  .hero-scan {
+  /* `is-scanning` is added by Hero.tsx ~1.2 s after load and removed when the
+     sweep ends, so the line only exists while it is moving. */
+  .hero-scan.is-scanning {
     display: block;
   }
-  .hero-scan-beam {
+  .is-scanning .hero-scan-beam {
     position: absolute;
     inset-block: 0;
     left: 0;
-    width: 220px;
+    width: 260px;
     opacity: 0;
-    background: linear-gradient(90deg, transparent, rgb(204 0 51 / 0.07) 70%, rgb(255 60 100 / 0.22) 99%, transparent);
-    border-right: 1px solid rgb(255 90 120 / 0.85);
-    box-shadow: 6px 0 18px -4px rgb(204 0 51 / 0.6);
-    animation: hero-scan 1.25s cubic-bezier(0.55, 0.05, 0.35, 1) 1.2s both;
+    background: linear-gradient(90deg, transparent, rgb(204 0 51 / 0.1) 65%, rgb(255 60 100 / 0.3) 99%, transparent);
+    border-right: 2px solid rgb(255 90 120 / 0.95);
+    box-shadow: 8px 0 24px -4px rgb(204 0 51 / 0.75);
+    animation: hero-scan 1.1s cubic-bezier(0.45, 0.05, 0.4, 1) both;
   }
 }
 @keyframes halo-breathe {
@@ -326,12 +353,12 @@
 @keyframes hero-scan {
   0% {
     opacity: 0;
-    transform: translateX(-220px);
+    transform: translateX(-260px);
   }
-  12% {
+  8% {
     opacity: 1;
   }
-  88% {
+  90% {
     opacity: 1;
   }
   100% {
@@ -412,7 +439,7 @@
   opacity: 0;
 }
 .dossier-tint {
-  background: #cc0033;
+  background: #d1002f;
   mix-blend-mode: multiply;
 }
 .dossier-scan::before {
@@ -420,11 +447,11 @@
   position: absolute;
   inset-inline: 0;
   top: 0;
-  height: 1px;
-  background: #ff2a58;
+  height: 2px;
+  background: #ff3d66;
   box-shadow:
-    0 0 10px 1px rgb(204 0 51 / 0.8),
-    0 -24px 40px -10px rgb(204 0 51 / 0.35);
+    0 0 14px 2px rgb(255 40 90 / 0.9),
+    0 -36px 48px -12px rgb(204 0 51 / 0.45);
 }
 .dossier-brackets {
   opacity: 0.75;
@@ -472,25 +499,32 @@
   }
 }
 
-/* Duotone until the frame scrolls into view; only while GSAP owns reveals. */
+/* Crimson duotone until the frame reaches mid-viewport, then a scan line
+   wipes down the frame and colour is restored exactly behind it. The duotone
+   is two overlays (a backdrop-filter that greys the image, and a multiply
+   tint) clipped away in step with the scan line. Only while GSAP owns reveals
+   (motion-ready) and motion is allowed; otherwise the image is full colour. */
+.dossier-mono {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  -webkit-backdrop-filter: grayscale(1) contrast(1.35) brightness(0.55);
+  backdrop-filter: grayscale(1) contrast(1.35) brightness(0.55);
+}
 @media (prefers-reduced-motion: no-preference) {
-  .motion-ready [data-dossier]:not(.is-clear) .dossier-img {
-    filter: grayscale(1) contrast(1.2) brightness(0.62);
-  }
-  .motion-ready [data-dossier]:not(.is-clear) .dossier-tint {
-    opacity: 1;
-  }
-  .motion-ready [data-dossier] .dossier-img {
-    transition:
-      opacity 0.7s var(--ease-out-expo),
-      scale 0.9s var(--ease-out-expo),
-      filter 1.6s cubic-bezier(0.5, 0, 0.2, 1) 0.15s;
-  }
+  .motion-ready [data-dossier] .dossier-mono,
   .motion-ready [data-dossier] .dossier-tint {
-    transition: opacity 1.6s cubic-bezier(0.5, 0, 0.2, 1) 0.15s;
+    opacity: 1;
+    clip-path: inset(0 0 0 0);
+    transition: clip-path 0.9s cubic-bezier(0.45, 0.05, 0.35, 1);
+  }
+  .motion-ready [data-dossier].is-clear .dossier-mono,
+  .motion-ready [data-dossier].is-clear .dossier-tint {
+    clip-path: inset(100% 0 0 0);
   }
   [data-dossier].is-clear .dossier-scan {
-    animation: dossier-scan 1.4s cubic-bezier(0.55, 0.05, 0.3, 1) both;
+    animation: dossier-scan 0.9s cubic-bezier(0.45, 0.05, 0.35, 1) both;
   }
 }
 @keyframes dossier-scan {
@@ -498,10 +532,10 @@
     opacity: 0;
     transform: translateY(0);
   }
-  8% {
+  6% {
     opacity: 1;
   }
-  85% {
+  92% {
     opacity: 1;
   }
   100% {

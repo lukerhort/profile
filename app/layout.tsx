@@ -27,7 +27,7 @@ const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: site.name,
-  jobTitle: site.title,
+  jobTitle: site.officialTitle,
   description: site.description,
   url: site.url,
   image: `${site.url}${ogImage}`,

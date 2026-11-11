@@ -2,7 +2,10 @@
 
 export const site = {
   name: "Luke Horton",
-  title: "Avionics Engineer",
+  /** Display descriptor used in the hero, footer and page title. */
+  title: "Electrical Engineer · Avionics Systems",
+  /** Official job title (About, Experience, structured data). */
+  officialTitle: "Electrical Engineer I, Systems",
   company: "True Anomaly",
   location: "Long Beach, California",
   city: "Long Beach, CA",
@@ -22,7 +25,7 @@ export const site = {
 export const about = {
   heading: "Systems first, down to the board.",
   paragraphs: [
-    "I'm an Electrical Engineer I, Systems at True Anomaly. I design avionics from the system architecture down to the circuit board, then carry them into integrated test. My background spans aerospace engineering, systems engineering, avionics integration, performance analysis, and technical program execution.",
+    "I'm an Electrical Engineer I, Systems at True Anomaly. I work on spacecraft avionics at the system level, design boards when the work calls for it, and am responsible for avionics during integrated system test on one of our product lines. My background spans aerospace engineering, systems engineering, avionics integration, performance analysis, and technical program execution.",
     "Before this role I was a Program Manager Intern at True Anomaly. At San Diego State University I studied Aerospace Engineering and worked on aircraft performance, avionics, and systems engineering projects.",
     "I'm most interested in spacecraft avionics, systems engineering, test, and mission-focused engineering work.",
   ],
@@ -51,8 +54,7 @@ export const experience: Role[] = [
     dates: "Sep 2026 – Present",
     location: "Long Beach, California",
     body: [
-      "I work at the system level more than the board level, though I do both: I own the system-level avionics design for two of True Anomaly's products, and I'm currently designing circuit boards.",
-      "I also own the avionics side of integrated system testing for one of our product lines.",
+      "I own system-level avionics design for two True Anomaly products, and the avionics side of integrated system testing for one product line. Most of my work is at the system level, but I design boards too, which is what I'm doing right now.",
     ],
   },
   {
@@ -94,6 +96,8 @@ export type ProjectImage = {
   width: number;
   height: number;
   fit?: "contain";
+  /** With fit "contain": a smaller margin around the image inside the frame. */
+  pad?: "tight";
   /** Presentational: a mostly-white image that is dimmed slightly to sit on the dark page. */
   tone?: "light";
 };
@@ -134,8 +138,8 @@ export const projects: Project[] = [
     image: {
       src: "/images/aleborne.webp",
       tone: "light",
-      alt: "ALEBORNE F-44 final CAD render, three-quarter top view",
-      caption: "Final CDR configuration",
+      alt: "Aleborne F-44 final CAD render, seen from above",
+      caption: "Final CAD render",
       width: 1248,
       height: 1090,
     },
@@ -143,26 +147,20 @@ export const projects: Project[] = [
       {
         src: "/images/aleborne-layout.webp",
         tone: "light",
-        alt: "Aleborne wireframe CAD showing the internal layout of engines, weapons bay and landing gear",
-        caption: "Internal layout wireframe",
+        alt: "Aleborne wireframe CAD view from above, with internal components visible through the outer skin",
+        caption: "Wireframe CAD view",
         width: 1000,
         height: 624,
       },
       {
         src: "/images/aleborne-profile.webp",
         tone: "light",
-        alt: "Aleborne side profile render with landing gear deployed",
+        alt: "Aleborne side profile render with landing gear down",
         caption: "Side profile, gear down",
         width: 1000,
         height: 617,
-      },
-      {
-        src: "/images/aleborne-bay.webp",
-        alt: "Aleborne internal weapons bay render, looking up into the open bay",
-        caption: "Internal weapons bay",
-        width: 709,
-        height: 762,
         fit: "contain",
+        pad: "tight",
       },
     ],
   },
@@ -190,21 +188,21 @@ export const projects: Project[] = [
     gallery: [
       {
         src: "/images/barrelborne-avionics.webp",
-        alt: "Barrelborne avionics bay open on the bench, wired to the Pixhawk flight controller, power module and telemetry radio",
-        caption: "Avionics bay integration",
+        alt: "Barrelborne fuselage opened up, with its wiring run out to a Pixhawk flight controller, a power board and a telemetry radio",
+        caption: "Avionics wiring",
         width: 1000,
         height: 750,
       },
       {
         src: "/images/barrelborne-power-harness.webp",
-        alt: "Hand-soldered power distribution board with XT60 leads for the Barrelborne avionics and motors",
-        caption: "Power distribution harness",
+        alt: "Barrelborne power wiring laid out on a chair: a small distribution board with red and black leads ending in yellow connectors",
+        caption: "Power wiring",
         width: 1000,
         height: 750,
       },
       {
         src: "/images/barrelborne-assembly.webp",
-        alt: "Assembled Barrelborne airframe on grass, showing the wing, engine nacelles and tail",
+        alt: "Assembled Barrelborne airframe on grass, showing the wing, four motor pods and the tail",
         caption: "Assembled airframe",
         width: 1000,
         height: 750,
@@ -227,21 +225,21 @@ export const projects: Project[] = [
     href: "https://lukerhort.github.io/daedalus-site/",
     repo: "https://github.com/lukerhort/daedalus",
     image: {
-      src: "/images/daedalus.webp",
-      tone: "light",
-      alt: "Daedalus flight computer logo",
-      caption: "Project mark",
-      width: 900,
-      height: 900,
-      fit: "contain",
+      src: "/images/daedalus-breadboard.webp",
+      alt: "Teensy 4.1 on a breadboard, wired to a SparkFun pressure sensor breakout",
+      caption: "Breadboard bring-up",
+      width: 1000,
+      height: 750,
     },
     gallery: [
       {
-        src: "/images/daedalus-breadboard.webp",
-        alt: "Phase 1 sensor bring-up: Teensy 4.1 on a breadboard wired to a breakout sensor board",
-        caption: "Phase 1 bench bring-up",
-        width: 1000,
-        height: 750,
+        src: "/images/daedalus.webp",
+        tone: "light",
+        alt: "Daedalus flight computer logo",
+        caption: "Project mark",
+        width: 900,
+        height: 900,
+        fit: "contain",
       },
     ],
   },
@@ -290,11 +288,12 @@ export const leadership = {
     {
       title: "President, Kappa Alpha Order",
       meta: "2024 · IFC Most Improved Chapter",
-      body: "Led a 170+ member chapter and a $200K+ annual budget, directing an executive board and 20+ chairs. Drove gains in membership and engagement, earning recognition as IFC Most Improved Chapter (2024).",
+      body: "Led the chapter and managed its annual budget, directing an executive board and 20+ chairs. Drove gains in membership and engagement, earning recognition as IFC Most Improved Chapter (2024).",
     },
     {
       title: "President, San Diego Sales Engineers",
-      meta: "National Society of Sales Engineers · SDSU · Fall 2025 – Spring 2026",
+      // Non-breaking spaces keep the date range on one line.
+      meta: "National Society of Sales Engineers · SDSU · Fall 2025 – Spring 2026",
       body: "Led chapter operations, planning networking sessions and technical workshops on sales engineering, and represented SDSU at the National Sales Engineering Conference (NSEC) in 2024 and 2025.",
     },
     {

@@ -13,7 +13,8 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 const pad = (n: number) => String(n).padStart(2, "0");
 
 function fitClass(img: ProjectImage) {
-  return img.fit === "contain" ? "object-contain p-[12%]" : "object-cover";
+  if (img.fit !== "contain") return "object-cover";
+  return img.pad === "tight" ? "object-contain p-[5%]" : "object-contain p-[12%]";
 }
 
 /**
@@ -23,8 +24,9 @@ function fitClass(img: ProjectImage) {
  * HTML, so nothing shifts when switching and the first image still shows if
  * JavaScript never runs.
  *
- * With motion allowed, the frame starts as a dark crimson duotone and clears
- * to full colour (with a scan line) once it scrolls into view. The duotone is
+ * With motion allowed, the frame starts as a dark crimson duotone; when it
+ * reaches the middle of the viewport a scan line wipes down it, restoring
+ * full colour behind the line. The duotone is
  * only applied under `html.motion-ready` (see globals.css), so no-JS, a failed
  * bundle and reduced motion all get full colour.
  */
@@ -49,7 +51,8 @@ export default function ProjectGallery({
       mm.add("(prefers-reduced-motion: no-preference)", () => {
         const st = ScrollTrigger.create({
           trigger: el,
-          start: "top 62%",
+          // Clears as the frame reaches the middle of the viewport.
+          start: "center 58%",
           once: true,
           onEnter: () => el.classList.add("is-clear"),
         });
@@ -76,12 +79,13 @@ export default function ProjectGallery({
           ))}
         </div>
         <span className="dossier-vignette" aria-hidden="true" />
+        <span className="dossier-mono" aria-hidden="true" />
         <span className="dossier-tint" aria-hidden="true" />
         <span className="dossier-scan" aria-hidden="true" />
         <Brackets inset="12px" adaptive className="dossier-brackets z-10" />
       </div>
 
-      {/* Dossier strip: built only from the project's own data. */}
+      {/* Dossier strip: built only from the project's own data (the course tag is shown once, beside the title). */}
       <p className="dossier-strip">
         <span className="text-fg">PRJ-{pad(index + 1)}</span>
         <span aria-hidden="true">·</span>
@@ -92,8 +96,6 @@ export default function ProjectGallery({
           />
           Status: {project.status}
         </span>
-        <span aria-hidden="true">·</span>
-        <span>{project.tag}</span>
       </p>
 
       <figcaption className="eyebrow mt-4 flex items-baseline gap-3" aria-live="polite">

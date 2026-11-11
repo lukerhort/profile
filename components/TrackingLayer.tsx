@@ -84,18 +84,24 @@ export function OrbitalTraffic() {
         });
       };
 
+      // Last written attribute values: objects move slowly, so most frames
+      // round to the same string and need no DOM write at all.
+      const lastT: string[] = [];
+      const lastO: string[] = [];
       const place = (time: number) =>
         nodes.forEach((node, i) => {
           const o = OBJECTS[i];
           const f = (((o.phase + time / o.period) % 1) + 1) % 1;
           const { x, y } = pointOnTrack(o.track, f);
-          node.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
+          const t = `translate(${x.toFixed(1)} ${y.toFixed(1)})`;
+          if (t !== lastT[i]) node.setAttribute("transform", (lastT[i] = t));
           // Fade in/out near the ends of the visible arc so wrap-around is invisible,
           // and out again before touching any keep-out box.
           const self: Box = { x0: x - 12, y0: y - 22, x1: x + (o.label ? 72 : 12), y1: y + 12 };
           let clear = 1;
           for (const k of keepouts) clear = Math.min(clear, (gap(self, k) - 16) / 40);
-          node.setAttribute("opacity", Math.max(0, Math.min(1, f * 8, (1 - f) * 8, clear)).toFixed(2));
+          const op = Math.max(0, Math.min(1, f * 8, (1 - f) * 8, clear)).toFixed(2);
+          if (op !== lastO[i]) node.setAttribute("opacity", (lastO[i] = op));
         });
 
       const mm = gsap.matchMedia();
@@ -239,6 +245,55 @@ export function TrackReticle({ className = "" }: { className?: string }) {
         return { x: r.left + r.width * 0.4, y: r.top + r.height * 0.5 };
       };
 
+      /**
+       * Clamp a desired reticle centre (screen px) so the brackets never sit on
+       * the hero copy/buttons or under the nav: if the reticle box would touch
+       * the copy block, push it out (up or right, whichever valid move is
+       * shorter), then keep it inside the hero below the header.
+       */
+      const safePoint = (x: number, y: number) => {
+        const r = (64 * wrap.getBoundingClientRect().width) / 300 + 12; // bracket extent + margin
+        const h = hero.getBoundingClientRect();
+        const navH = (document.querySelector(".site-header") as HTMLElement | null)?.offsetHeight ?? 0;
+        const minX = h.left + r + 8;
+        const maxX = h.right - r - 8;
+        const minY = Math.max(h.top, 0) + navH + r + 8;
+        const maxY = h.bottom - r - 8;
+        const clampXY = (px: number, py: number) => ({
+          x: Math.min(maxX, Math.max(minX, px)),
+          y: Math.min(maxY, Math.max(minY, py)),
+        });
+        let c = { left: Infinity, top: Infinity, right: -Infinity, bottom: -Infinity };
+        const range = document.createRange();
+        hero.querySelectorAll<HTMLElement>("[data-hero-copy] [data-hero-in]").forEach((el) => {
+          // The extent of the content, not the (full-width) block box.
+          range.selectNodeContents(el);
+          const b = range.getBoundingClientRect();
+          if (!b.width) return;
+          c = {
+            left: Math.min(c.left, b.left),
+            top: Math.min(c.top, b.top),
+            right: Math.max(c.right, b.right),
+            bottom: Math.max(c.bottom, b.bottom),
+          };
+        });
+        let p = clampXY(x, y);
+        const hits = (q: { x: number; y: number }) =>
+          q.x + r > c.left && q.x - r < c.right && q.y + r > c.top && q.y - r < c.bottom;
+        if (Number.isFinite(c.left) && hits(p)) {
+          const up = clampXY(p.x, c.top - r);
+          const right = clampXY(c.right + r, p.y);
+          const options = [up, right].filter((q) => !hits(q));
+          if (options.length) {
+            options.sort((a, b) => Math.hypot(a.x - p.x, a.y - p.y) - Math.hypot(b.x - p.x, b.y - p.y));
+            p = options[0];
+          } else {
+            p = clampXY(c.right + r, minY); // top-right of the copy: always clear
+          }
+        }
+        return p;
+      };
+
       const mm = gsap.matchMedia();
       mm.add(
         {
@@ -251,15 +306,18 @@ export function TrackReticle({ className = "" }: { className?: string }) {
           const io = new IntersectionObserver(([e]) => (visible = e.isIntersecting));
           io.observe(hero);
 
-          // --- Lock-on intro: from the centre of the frame to the target.
+          // --- Lock-on intro: from a point near the top of the frame (clear of
+          // the copy and nav) to the target.
           const intro = gsap.timeline();
           const sinceLoad = performance.now() / 1000;
           if (sinceLoad < 1.3) {
             const h = hero.getBoundingClientRect();
             const p = targetPoint();
+            const fromX = fine ? h.left + h.width * 0.5 : h.left + h.width * 0.8;
+            const from = safePoint(fromX, h.top + h.height * 0.2);
             setStatus("ACQ");
             intro
-              .set(reticle, { x: h.left + h.width / 2 - p.x, y: h.top + h.height / 2 - p.y })
+              .set(reticle, { x: from.x - p.x, y: from.y - p.y })
               .to(reticle, { x: 0, y: 0, duration: 0.55, ease: "expo.inOut" }, Math.max(0.2, 1.45 - sinceLoad));
           }
           intro
@@ -277,9 +335,10 @@ export function TrackReticle({ className = "" }: { className?: string }) {
             const dx = gsap.getProperty(reticle, "x") as number;
             const dy = gsap.getProperty(reticle, "y") as number;
             const tm = telemetry(t, dx, dy);
-            clockEl.textContent = clock(t);
-            rangeEl.textContent = tm.range;
-            azelEl.textContent = tm.azel;
+            const ck = clock(t);
+            if (clockEl.textContent !== ck) clockEl.textContent = ck;
+            if (rangeEl.textContent !== tm.range) rangeEl.textContent = tm.range;
+            if (azelEl.textContent !== tm.azel) azelEl.textContent = tm.azel;
             if (fine && !intro.isActive()) setStatus(Math.hypot(dx, dy) > 14 ? "SLEW" : "LOCK");
           };
           gsap.ticker.add(tick);
@@ -301,7 +360,8 @@ export function TrackReticle({ className = "" }: { className?: string }) {
             const onMove = (e: PointerEvent) => {
               if (intro.isActive() || e.pointerType !== "mouse") return;
               const p = targetPoint();
-              aim(e.clientX - p.x, e.clientY - p.y);
+              const s = safePoint(e.clientX, e.clientY);
+              aim(s.x - p.x, s.y - p.y);
               home.restart(true);
             };
             const onLeave = () => home.restart(true);
@@ -328,7 +388,7 @@ export function TrackReticle({ className = "" }: { className?: string }) {
   );
 
   return (
-    <div ref={root} className={`pointer-events-none ${className}`} aria-hidden="true">
+    <div ref={root} data-reticle className={`pointer-events-none ${className}`} aria-hidden="true">
       <div className="trk-drift relative">
         <svg viewBox="-120 -90 300 180" className="h-auto w-full overflow-visible" fill="none">
           {/* Lock glow behind the target */}

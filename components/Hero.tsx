@@ -46,10 +46,25 @@ export default function Hero({ media, backdrop }: { media: HeroMedia; backdrop: 
         const tl = gsap.timeline({
           scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
         });
-        tl.to("[data-hero-copy]", { yPercent: -35, autoAlpha: 0, ease: "none" }, 0)
+        // Opacity (not autoAlpha) so the hero links stay reachable with Shift+Tab.
+        tl.to("[data-hero-copy]", { yPercent: -35, opacity: 0, ease: "none" }, 0)
           .to("[data-hero-bg]", { scale: 1.15, ease: "none" }, 0)
           .to("[data-hero-shade]", { opacity: 1, ease: "none" }, 0)
           .to("[data-hero-orbit]", { yPercent: -12, ease: "none" }, 0);
+
+        // One-off acquisition sweep ~1.2 s after load. Only JS starts it, so
+        // without JS (or with reduced motion) the scan line never shows.
+        const scan = root.current!.querySelector<HTMLElement>("[data-hero-scan]")!;
+        const done = () => scan.classList.remove("is-scanning");
+        scan.addEventListener("animationend", done);
+        const start = gsap.delayedCall(Math.max(0.05, 1.2 - performance.now() / 1000), () =>
+          scan.classList.add("is-scanning"),
+        );
+        return () => {
+          start.kill();
+          scan.removeEventListener("animationend", done);
+          done();
+        };
       });
     },
     { scope: root },
@@ -96,8 +111,8 @@ export default function Hero({ media, backdrop }: { media: HeroMedia; backdrop: 
         <TrackReticle className="absolute left-[28%] top-[14%] w-[240px] md:left-auto md:right-[9%] md:top-[18%] md:w-[min(30vw,420px)]" />
       </div>
 
-      {/* One-off acquisition sweep (CSS; hidden with reduced motion) */}
-      <div className="hero-scan pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+      {/* One-off acquisition sweep: started by JS (never shown without JS or with reduced motion) */}
+      <div data-hero-scan className="hero-scan pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
         <span className="hero-scan-beam" />
       </div>
 
@@ -126,9 +141,15 @@ export default function Hero({ media, backdrop }: { media: HeroMedia; backdrop: 
           <p
             data-hero-in
             style={{ "--hero-i": 3 } as React.CSSProperties}
-            className="display mt-4 text-2xl font-medium tracking-[0.2em] text-fg/85 md:text-4xl"
+            className="display mt-4 text-[1.4rem] font-medium leading-[1.1] tracking-[0.16em] text-fg/85 sm:text-2xl md:text-3xl lg:text-[2.15rem]"
           >
-            {site.title}
+            {/* "Electrical Engineer · Avionics Systems": two lines on phones, one line from sm up. */}
+            {site.title.split(" · ").map((part, i) => (
+              <span key={part}>
+                {i > 0 ? <span className="max-sm:sr-only"> · </span> : null}
+                <span className="whitespace-nowrap max-sm:block">{part}</span>
+              </span>
+            ))}
           </p>
         </div>
         <p

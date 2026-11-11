@@ -6,7 +6,7 @@ export default function Leadership() {
   return (
     <section id="leadership" className="relative border-t border-line py-28 md:py-44">
       <div className="container-x grid gap-16 lg:grid-cols-12 lg:gap-12">
-        <div className="lg:col-span-5" data-reveal-group>
+        <div className="lg:sticky lg:top-28 lg:col-span-5 lg:self-start" data-reveal-group>
           <SectionHeading index="05" label="Leadership" title="Beyond engineering" />
           <dl className="mt-12 flex gap-10 md:gap-12">
             {leadership.stats.map((s) => (
