@@ -1,9 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
 import type { Project, ProjectImage } from "@/lib/content";
 import Brackets from "./Brackets";
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
 
 const pad = (n: number) => String(n).padStart(2, "0");
 
@@ -12,19 +17,51 @@ function fitClass(img: ProjectImage) {
 }
 
 /**
- * Project image viewer: a fixed 4:3 frame with every image stacked inside it
- * (only the active one is shown) plus a thumbnail strip that swaps it. All
- * images are in the HTML, so nothing shifts when switching and the first image
- * still shows if JavaScript never runs.
+ * Project image viewer styled as a mission dossier: a fixed 4:3 frame with
+ * every image stacked inside it (only the active one is shown), a dossier
+ * strip, and a thumbnail strip that swaps the image. All images are in the
+ * HTML, so nothing shifts when switching and the first image still shows if
+ * JavaScript never runs.
+ *
+ * With motion allowed, the frame starts as a dark crimson duotone and clears
+ * to full colour (with a scan line) once it scrolls into view. The duotone is
+ * only applied under `html.motion-ready` (see globals.css), so no-JS, a failed
+ * bundle and reduced motion all get full colour.
  */
-export default function ProjectGallery({ project, className = "" }: { project: Project; className?: string }) {
+export default function ProjectGallery({
+  project,
+  index,
+  className = "",
+}: {
+  project: Project;
+  index: number;
+  className?: string;
+}) {
   const images = [project.image, ...project.gallery];
   const [active, setActive] = useState(0);
   const current = images[active];
+  const frame = useRef<HTMLDivElement>(null);
+
+  useGSAP(
+    () => {
+      const el = frame.current!;
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        const st = ScrollTrigger.create({
+          trigger: el,
+          start: "top 62%",
+          once: true,
+          onEnter: () => el.classList.add("is-clear"),
+        });
+        return () => st.kill();
+      });
+    },
+    { scope: frame },
+  );
 
   return (
     <figure className={className} data-reveal>
-      <div className="group relative aspect-[4/3] overflow-hidden bg-ink-2">
+      <div ref={frame} data-dossier className="dossier-frame group relative aspect-[4/3] overflow-hidden">
         <div data-parallax="0.1" className="absolute -inset-y-[6%] inset-x-0">
           {images.map((img, i) => (
             <Image
@@ -34,21 +71,30 @@ export default function ProjectGallery({ project, className = "" }: { project: P
               fill
               sizes="(min-width: 1024px) 58vw, 100vw"
               aria-hidden={i === active ? undefined : true}
-              className={`transition-[opacity,scale] duration-700 ease-(--ease-out-expo) group-hover:scale-[1.03] ${fitClass(img)} ${
-                i === active ? "opacity-100" : "opacity-0"
-              }`}
+              className={`dossier-img ${img.tone === "light" ? "tone-light" : ""} ${fitClass(img)} ${i === active ? "opacity-100" : "opacity-0"}`}
             />
           ))}
         </div>
-        <Brackets inset="12px" className="z-10 opacity-60 transition-opacity duration-500 group-hover:opacity-100" />
-        <span className="eyebrow absolute left-7 top-7 z-10 flex items-center gap-2 bg-ink/70 px-3 py-1.5 text-fg/80 backdrop-blur">
+        <span className="dossier-vignette" aria-hidden="true" />
+        <span className="dossier-tint" aria-hidden="true" />
+        <span className="dossier-scan" aria-hidden="true" />
+        <Brackets inset="12px" adaptive className="dossier-brackets z-10" />
+      </div>
+
+      {/* Dossier strip: built only from the project's own data. */}
+      <p className="dossier-strip">
+        <span className="text-fg">PRJ-{pad(index + 1)}</span>
+        <span aria-hidden="true">·</span>
+        <span className="inline-flex items-center gap-2">
           <span
             className={`h-1.5 w-1.5 rounded-full ${project.status === "Complete" ? "bg-emerald-400" : "bg-amber-400"}`}
             aria-hidden="true"
           />
-          {project.status}
+          Status: {project.status}
         </span>
-      </div>
+        <span aria-hidden="true">·</span>
+        <span>{project.tag}</span>
+      </p>
 
       <figcaption className="eyebrow mt-4 flex items-baseline gap-3" aria-live="polite">
         <span className="text-accent">

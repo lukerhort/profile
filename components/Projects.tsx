@@ -18,6 +18,7 @@ export default function Projects() {
           >
             <ProjectGallery
               project={p}
+              index={i}
               className={`lg:col-span-7 ${i % 2 ? "lg:order-2 lg:col-start-6" : ""}`}
             />
 

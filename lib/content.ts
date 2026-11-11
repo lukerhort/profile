@@ -94,6 +94,8 @@ export type ProjectImage = {
   width: number;
   height: number;
   fit?: "contain";
+  /** Presentational: a mostly-white image that is dimmed slightly to sit on the dark page. */
+  tone?: "light";
 };
 
 export type Project = {
@@ -131,6 +133,7 @@ export const projects: Project[] = [
     href: "https://lukerhort.github.io/aleborne/",
     image: {
       src: "/images/aleborne.webp",
+      tone: "light",
       alt: "ALEBORNE F-44 final CAD render, three-quarter top view",
       caption: "Final CDR configuration",
       width: 1248,
@@ -139,6 +142,7 @@ export const projects: Project[] = [
     gallery: [
       {
         src: "/images/aleborne-layout.webp",
+        tone: "light",
         alt: "Aleborne wireframe CAD showing the internal layout of engines, weapons bay and landing gear",
         caption: "Internal layout wireframe",
         width: 1000,
@@ -146,6 +150,7 @@ export const projects: Project[] = [
       },
       {
         src: "/images/aleborne-profile.webp",
+        tone: "light",
         alt: "Aleborne side profile render with landing gear deployed",
         caption: "Side profile, gear down",
         width: 1000,
@@ -223,6 +228,7 @@ export const projects: Project[] = [
     repo: "https://github.com/lukerhort/daedalus",
     image: {
       src: "/images/daedalus.webp",
+      tone: "light",
       alt: "Daedalus flight computer logo",
       caption: "Project mark",
       width: 900,
