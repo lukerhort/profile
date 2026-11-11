@@ -1,15 +1,16 @@
 import { education, skills } from "@/lib/content";
 import SectionHeading from "./SectionHeading";
+import SkillsPanel from "./SkillsPanel";
 
 export default function Education() {
   return (
-    <section id="education" className="relative border-t border-line py-28 md:py-44">
+    <section id="education" className="relative border-t border-line py-20 md:py-44">
       <div className="container-x">
         <div data-reveal-group>
           <SectionHeading index="04" label="Education & Skills" title="Foundation" />
         </div>
 
-        <div className="mt-16 grid gap-12 border-t border-line pt-12 lg:grid-cols-12" data-reveal-group>
+        <div className="mt-12 grid gap-10 md:mt-16 md:gap-12 border-t border-line pt-12 lg:grid-cols-12" data-reveal-group>
           <div className="lg:col-span-5" data-reveal>
             <p className="eyebrow">{education.date}</p>
             <h3 className="display mt-4 text-[clamp(2.25rem,4.5vw,3.75rem)]">{education.degree}</h3>
@@ -33,21 +34,7 @@ export default function Education() {
           </div>
         </div>
 
-        <div
-          className="mt-20 grid gap-px border border-line bg-line sm:grid-cols-2 lg:grid-cols-4"
-          data-reveal-group
-        >
-          {skills.map((g) => (
-            <div key={g.group} className="bg-ink p-7" data-reveal>
-              <h3 className="eyebrow text-fg">{g.group}</h3>
-              <ul className="mt-5 space-y-2 text-sm text-fg/65">
-                {g.items.map((s) => (
-                  <li key={s}>{s}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+        <SkillsPanel groups={skills} />
       </div>
     </section>
   );

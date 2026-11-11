@@ -1,4 +1,4 @@
-import { test, expect, scrollThrough, waitForReady, hiddenTextElements, SECTION_IDS } from "./fixtures";
+import { test, expect, scrollThrough, waitForReady, hiddenTextElements, revealHeader, SECTION_IDS } from "./fixtures";
 
 const LEGIT_FADES = ["#top [data-hero-copy]", ".exp-pinned [data-exp-card]"];
 
@@ -38,7 +38,8 @@ test.describe("navigation", () => {
     const hrefs = await links.evaluateAll((els) => els.map((e) => e.getAttribute("href")!));
     expect(hrefs.length).toBeGreaterThanOrEqual(5);
     for (const href of hrefs) {
-      await page.locator(`header nav ul a[href="${href}"]`).evaluate((el) => (el as HTMLElement).click());
+      await revealHeader(page);
+      await page.locator(`header nav ul a[href="${href}"]`).click();
       await expect
         .poll(
           () =>
@@ -57,14 +58,16 @@ test.describe("navigation", () => {
     test.skip(info.project.name !== "mobile", "mobile only");
     await page.goto("/");
     await waitForReady(page);
-    await page.getByRole("button", { name: "Open menu" }).evaluate((el) => (el as HTMLElement).click());
+    await page.getByRole("button", { name: "Open menu" }).click();
     const menu = page.locator("#mobile-menu");
     await expect(menu).toHaveCSS("opacity", "1");
     for (const [label, id] of [["Experience", "experience"], ["Contact", "contact"]]) {
       if (!(await menu.isVisible()) || (await menu.getAttribute("aria-hidden")) === "true") {
-        await page.getByRole("button", { name: "Open menu" }).evaluate((el) => (el as HTMLElement).click());
+        await revealHeader(page);
+        await page.getByRole("button", { name: "Open menu" }).click();
       }
-      await menu.getByRole("link", { name: label }).evaluate((el) => (el as HTMLElement).click());
+      await expect(menu.getByRole("link", { name: label })).toBeVisible();
+      await menu.getByRole("link", { name: label }).click();
       await expect
         .poll(() => page.evaluate((i) => document.getElementById(i)!.getBoundingClientRect().top < window.innerHeight * 0.5, id), { timeout: 15_000 })
         .toBe(true);
@@ -100,9 +103,12 @@ test.describe("resilience", () => {
     test("h1 and every section's text are visible", async ({ page }) => {
       await page.goto("/");
       await expect(page.locator("h1")).toHaveText(/Luke\s+Horton/i, { useInnerText: true });
-      await expect(page.locator("h1")).toHaveCSS("opacity", "1");
+      // The hero intro is a CSS-only animation that ends visible; poll until it has.
+      await expect(page.locator("h1")).toHaveCSS("opacity", "1", { timeout: 3_000 });
       await expect(page.locator("h1")).toHaveCSS("visibility", "visible");
-      expect(await hiddenTextElements(page, [])).toEqual([]);
+      await expect
+        .poll(() => hiddenTextElements(page, []), { timeout: 3_000, message: "all text visible after the CSS intro" })
+        .toEqual([]);
       for (const id of SECTION_IDS) {
         const text = await page.locator(`section#${id}`).innerText();
         expect(text.trim().length, `section #${id} has text`).toBeGreaterThan(5);

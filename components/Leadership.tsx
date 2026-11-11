@@ -1,5 +1,6 @@
 import { leadership } from "@/lib/content";
 import SectionHeading from "./SectionHeading";
+import StatCount from "./StatCount";
 
 export default function Leadership() {
   return (
@@ -7,11 +8,11 @@ export default function Leadership() {
       <div className="container-x grid gap-16 lg:grid-cols-12 lg:gap-12">
         <div className="lg:col-span-5" data-reveal-group>
           <SectionHeading index="05" label="Leadership" title="Beyond engineering" />
-          <dl className="mt-12 flex gap-12">
+          <dl className="mt-12 flex gap-10 md:gap-12">
             {leadership.stats.map((s) => (
               <div key={s.label} className="flex flex-col-reverse" data-reveal>
                 <dt className="eyebrow mt-2">{s.label}</dt>
-                <dd className="display text-6xl text-fg md:text-7xl">{s.value}</dd>
+                <dd className="display text-6xl text-fg md:text-7xl"><StatCount value={s.value} /></dd>
               </div>
             ))}
           </dl>
