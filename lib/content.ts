@@ -1,5 +1,4 @@
 // All site copy lives here. Edit this file to update the site.
-// Search for "TODO" to find places that still need details from Luke.
 
 export const site = {
   name: "Luke Horton",
@@ -9,10 +8,11 @@ export const site = {
   city: "Long Beach, CA",
   url: "https://www.lukehorton.me",
   email: "lukerhorton4@gmail.com",
-  resume: "/Luke Horton Resume.pdf",
+  resume: "/Luke-Horton-Resume.pdf",
   gaId: "G-7JRD0V232N",
+  tagline: "System-level avionics design and integrated test for spacecraft.",
   description:
-    "Luke Horton is an Avionics Engineer at True Anomaly working on vehicle avionics for space systems. B.S. Aerospace Engineering, San Diego State University (2026).",
+    "Luke Horton is an Electrical Engineer I, Systems at True Anomaly, owning system-level avionics design and the avionics side of integrated test. B.S. Aerospace Engineering, San Diego State University (2026).",
   links: {
     linkedin: "https://www.linkedin.com/in/luke-r-horton",
     github: "https://github.com/lukerhort",
@@ -20,14 +20,14 @@ export const site = {
 };
 
 export const about = {
-  heading: "Vehicle avionics for space systems.",
+  heading: "Systems first, down to the board.",
   paragraphs: [
-    "I'm an Avionics Engineer at True Anomaly, working on vehicle avionics for space systems. My background spans aerospace engineering, systems engineering, avionics integration, performance analysis, and technical program execution.",
+    "I'm an Electrical Engineer I, Systems at True Anomaly. I design avionics from the system architecture down to the circuit board, then carry them into integrated test. My background spans aerospace engineering, systems engineering, avionics integration, performance analysis, and technical program execution.",
     "Before this role I was a Program Manager Intern at True Anomaly. At San Diego State University I studied Aerospace Engineering and worked on aircraft performance, avionics, and systems engineering projects.",
     "I'm most interested in spacecraft avionics, systems engineering, test, and mission-focused engineering work.",
   ],
   facts: [
-    { label: "Current", value: "Avionics Engineer, True Anomaly" },
+    { label: "Current", value: "Electrical Engineer I, Systems · True Anomaly" },
     { label: "Based", value: "Long Beach, CA" },
     { label: "Education", value: "B.S. Aerospace Engineering, SDSU '26" },
     { label: "Focus", value: "Spacecraft avionics · Systems · Test" },
@@ -41,19 +41,19 @@ export type Role = {
   dates: string;
   location?: string;
   body: string[];
-  todo?: string;
 };
 
 export const experience: Role[] = [
   {
-    title: "Avionics Engineer",
+    title: "Electrical Engineer I, Systems",
     org: "True Anomaly",
     type: "Full-time",
     dates: "Sep 2026 – Present",
     location: "Long Beach, California",
-    body: ["Working on vehicle avionics for space systems."],
-    // TODO(Luke): add 1–3 sentences on your avionics work (keep it within what you can share publicly).
-    todo: "Add a short description of your avionics work.",
+    body: [
+      "I work at the system level more than the board level, though I do both: I own the system-level avionics design for two of True Anomaly's products, and I'm currently designing circuit boards.",
+      "I also own the avionics side of integrated system testing for one of our product lines.",
+    ],
   },
   {
     title: "Program Manager Intern",
@@ -69,7 +69,7 @@ export const experience: Role[] = [
   {
     title: "Inside Sales Engineer Intern",
     org: "DMG Corporation",
-    dates: "Sep 2025 – 2026",
+    dates: "Sep 2025 – Apr 2026",
     location: "San Diego, California",
     body: [
       "Provided operational support to outside sales engineers: generating quotes, securing vendor pricing, processing sales orders and POs, coordinating with manufacturers, and managing customer status communications.",
@@ -86,6 +86,16 @@ export const experience: Role[] = [
   },
 ];
 
+export type ProjectImage = {
+  src: string;
+  alt: string;
+  /** Short label shown under the gallery frame. */
+  caption: string;
+  width: number;
+  height: number;
+  fit?: "contain";
+};
+
 export type Project = {
   name: string;
   subtitle: string;
@@ -96,7 +106,12 @@ export type Project = {
   details: string[];
   stats: string[];
   href: string;
-  image: { src: string; alt: string; width: number; height: number; fit?: "contain" };
+  /** Source code repository, shown as a second link next to the project site. */
+  repo?: string;
+  /** Primary image (first in the gallery). */
+  image: ProjectImage;
+  /** Additional real build / design images shown in the gallery. */
+  gallery: ProjectImage[];
 };
 
 export const projects: Project[] = [
@@ -114,7 +129,37 @@ export const projects: Project[] = [
     ],
     stats: ["M 1.84 dash", "+7.5g", "63,464 lb MTOW"],
     href: "https://lukerhort.github.io/aleborne/",
-    image: { src: "/images/aleborne.webp", alt: "ALEBORNE F-44 Falcon final CAD render", width: 1248, height: 1090 },
+    image: {
+      src: "/images/aleborne.webp",
+      alt: "ALEBORNE F-44 final CAD render, three-quarter top view",
+      caption: "Final CDR configuration",
+      width: 1248,
+      height: 1090,
+    },
+    gallery: [
+      {
+        src: "/images/aleborne-layout.webp",
+        alt: "Aleborne wireframe CAD showing the internal layout of engines, weapons bay and landing gear",
+        caption: "Internal layout wireframe",
+        width: 1000,
+        height: 624,
+      },
+      {
+        src: "/images/aleborne-profile.webp",
+        alt: "Aleborne side profile render with landing gear deployed",
+        caption: "Side profile, gear down",
+        width: 1000,
+        height: 617,
+      },
+      {
+        src: "/images/aleborne-bay.webp",
+        alt: "Aleborne internal weapons bay render, looking up into the open bay",
+        caption: "Internal weapons bay",
+        width: 709,
+        height: 762,
+        fit: "contain",
+      },
+    ],
   },
   {
     name: "Barrelborne",
@@ -130,7 +175,36 @@ export const projects: Project[] = [
     ],
     stats: ["Flew @ 42.7 mph", "20 lb airframe", "Pixhawk 6C"],
     href: "https://www.barrelborne.co/",
-    image: { src: "/images/barrelborne.webp", alt: "Barrelborne WIG vehicle and team at SDSU Senior Design Day", width: 1400, height: 1050 },
+    image: {
+      src: "/images/barrelborne.webp",
+      alt: "Barrelborne WIG vehicle and the four-person team at SDSU Senior Design Day",
+      caption: "Senior Design Day",
+      width: 1200,
+      height: 900,
+    },
+    gallery: [
+      {
+        src: "/images/barrelborne-avionics.webp",
+        alt: "Barrelborne avionics bay open on the bench, wired to the Pixhawk flight controller, power module and telemetry radio",
+        caption: "Avionics bay integration",
+        width: 1000,
+        height: 750,
+      },
+      {
+        src: "/images/barrelborne-power-harness.webp",
+        alt: "Hand-soldered power distribution board with XT60 leads for the Barrelborne avionics and motors",
+        caption: "Power distribution harness",
+        width: 1000,
+        height: 750,
+      },
+      {
+        src: "/images/barrelborne-assembly.webp",
+        alt: "Assembled Barrelborne airframe on grass, showing the wing, engine nacelles and tail",
+        caption: "Assembled airframe",
+        width: 1000,
+        height: 750,
+      },
+    ],
   },
   {
     name: "Daedalus",
@@ -146,7 +220,24 @@ export const projects: Project[] = [
     ],
     stats: ["Teensy 4.1", "50+ CI tests", "L1 certified"],
     href: "https://lukerhort.github.io/daedalus-site/",
-    image: { src: "/images/daedalus.webp", alt: "Daedalus flight computer logo", width: 900, height: 900, fit: "contain" },
+    repo: "https://github.com/lukerhort/daedalus",
+    image: {
+      src: "/images/daedalus.webp",
+      alt: "Daedalus flight computer logo",
+      caption: "Project mark",
+      width: 900,
+      height: 900,
+      fit: "contain",
+    },
+    gallery: [
+      {
+        src: "/images/daedalus-breadboard.webp",
+        alt: "Phase 1 sensor bring-up: Teensy 4.1 on a breadboard wired to a breakout sensor board",
+        caption: "Phase 1 bench bring-up",
+        width: 1000,
+        height: 750,
+      },
+    ],
   },
 ];
 
@@ -154,7 +245,6 @@ export const education = {
   degree: "B.S. Aerospace Engineering",
   school: "San Diego State University",
   date: "Graduated May 2026",
-  // TODO(Luke): optionally add GPA, honors, minor, or relevant awards here.
   coursework: [
     "Spacecraft Attitude Dynamics & Control",
     "Feedback Flight Control",
@@ -177,7 +267,7 @@ export const skills: { group: string; items: string[] }[] = [
   },
   {
     group: "PMO & PLM Tools",
-    items: ["Jira", "Confluence", "Duro", "Teamcenter", "Power BI", "Microsoft Office", "Google Suite"],
+    items: ["Jira", "Confluence", "Duro", "Teamcenter", "Power BI"],
   },
   {
     group: "CAD & Fabrication",

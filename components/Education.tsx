@@ -14,7 +14,6 @@ export default function Education() {
             <p className="eyebrow">{education.date}</p>
             <h3 className="display mt-4 text-[clamp(2.25rem,4.5vw,3.75rem)]">{education.degree}</h3>
             <p className="mt-3 text-lg text-fg/80">{education.school}</p>
-            {/* TODO(Luke): add GPA, honors, or awards in lib/content.ts -> education if you want them shown. */}
           </div>
           <div className="lg:col-span-4 lg:col-start-7" data-reveal>
             <p className="eyebrow text-accent">Relevant coursework</p>

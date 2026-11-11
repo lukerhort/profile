@@ -153,9 +153,6 @@ export default function Experience() {
                   <p key={p}>{p}</p>
                 ))}
               </div>
-              {r.todo && process.env.NODE_ENV !== "production" ? (
-                <p className="todo mt-5">TODO (dev only): {r.todo}</p>
-              ) : null}
             </article>
           ))}
         </div>
