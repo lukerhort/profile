@@ -1,7 +1,6 @@
-import Image from "next/image";
 import { projects } from "@/lib/content";
 import SectionHeading from "./SectionHeading";
-import Brackets from "./Brackets";
+import ProjectGallery from "./ProjectGallery";
 
 export default function Projects() {
   return (
@@ -12,37 +11,15 @@ export default function Projects() {
 
       <div className="mt-20 space-y-28 md:mt-28 md:space-y-44">
         {projects.map((p, i) => (
-          <article key={p.name} className="container-x grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
-            <a
-              href={p.href}
-              target="_blank"
-              rel="noopener"
-              aria-label={`${p.name} project site`}
-              className={`group relative block aspect-[4/3] overflow-hidden bg-ink-2 lg:col-span-7 ${
-                i % 2 ? "lg:order-2 lg:col-start-6" : ""
-              }`}
-              data-reveal
-            >
-              <div data-parallax="0.1" className="absolute -inset-y-[6%] inset-x-0">
-                <Image
-                  src={p.image.src}
-                  alt={p.image.alt}
-                  fill
-                  sizes="(min-width: 1024px) 58vw, 100vw"
-                  className={`transition-transform duration-1000 ease-(--ease-out-expo) group-hover:scale-[1.03] ${
-                    p.image.fit === "contain" ? "object-contain p-[12%]" : "object-cover"
-                  }`}
-                />
-              </div>
-              <Brackets inset="12px" className="z-10 opacity-60 transition-opacity duration-500 group-hover:opacity-100" />
-              <span className="eyebrow absolute left-7 top-7 flex items-center gap-2 bg-ink/70 px-3 py-1.5 text-fg/80 backdrop-blur">
-                <span
-                  className={`h-1.5 w-1.5 rounded-full ${p.status === "Complete" ? "bg-emerald-400" : "bg-amber-400"}`}
-                  aria-hidden="true"
-                />
-                {p.status}
-              </span>
-            </a>
+          <article
+            key={p.name}
+            data-testid="project-card"
+            className="container-x grid items-center gap-10 lg:grid-cols-12 lg:gap-12"
+          >
+            <ProjectGallery
+              project={p}
+              className={`lg:col-span-7 ${i % 2 ? "lg:order-2 lg:col-start-6" : ""}`}
+            />
 
             <div
               className={`lg:col-span-4 ${i % 2 ? "lg:order-1 lg:col-start-1" : "lg:col-start-9"}`}
@@ -70,7 +47,7 @@ export default function Projects() {
                   </li>
                 ))}
               </ul>
-              <details className="group/d mt-6 border-t border-line pt-4" data-reveal>
+              <details open className="group/d mt-6 border-t border-line pt-4" data-reveal>
                 <summary className="eyebrow cursor-pointer list-none text-fg/70 transition-colors hover:text-fg [&::-webkit-details-marker]:hidden">
                   <span className="mr-2 inline-block transition-transform group-open/d:rotate-45">+</span>
                   My role in detail
@@ -81,10 +58,15 @@ export default function Projects() {
                   ))}
                 </div>
               </details>
-              <div className="mt-8" data-reveal>
+              <div className="mt-8 flex flex-wrap gap-3" data-reveal>
                 <a href={p.href} target="_blank" rel="noopener" className="btn-line">
                   Visit project site <span aria-hidden="true">→</span>
                 </a>
+                {p.repo ? (
+                  <a href={p.repo} target="_blank" rel="noopener" className="btn-line">
+                    View firmware on GitHub <span aria-hidden="true">↗</span>
+                  </a>
+                ) : null}
               </div>
             </div>
           </article>
