@@ -31,3 +31,9 @@ One-time setup: repo **Settings → Pages → Build and deployment → Source: G
 **Vercel:** import the repo; framework preset Next.js, no settings needed (output is static).
 
 The previous hand-written site is kept for reference in `legacy/index.html` (not deployed).
+
+## Tests and social card
+
+- `npm run test:e2e` builds the static export and runs the Playwright suite (desktop + mobile Chromium); `npm run test:e2e:only` skips the build. First run: `npx playwright install chromium`.
+- `npm run og` regenerates `public/og.png` (1200x630) via `scripts/generate-og.mjs`.
+
